@@ -1,5 +1,4 @@
 from itertools import islice
-from typing import OrderedDict
 import pygame 
 import numpy as np
 import networkx as nx
@@ -56,7 +55,7 @@ class ArcadeGame:
     def new_game(self):
         self.score = 0
         self.blocks = 0
-        self.link_grid = OrderedDict()
+        self.link_grid = {}
         for edge in self.edges: #populate link grid
             self.link_grid[edge] = np.zeros(COLUMN_COUNT, dtype= int)
         self.new_round()                  
