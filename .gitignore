@@ -128,9 +128,7 @@ dmypy.json
 # Pyre type checker
 .pyre/
 
-deepq_EON.zip
-deepq_EON1.zip
-deepq_EON2.zip
-deepq_EON3_continued_1.zip
-deepq_EON4.zip
-deepq_EON3.zip
+Models
+Evaluation data
+tensorboardEON
+wandb

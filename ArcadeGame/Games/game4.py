@@ -45,6 +45,7 @@ class ArcadeGame:
 
     def render(self):
         self.screen = pygame.display.set_mode(self.window)
+        pygame.display.set_caption('DeepEON Arcade')
         self.screen.blit(self.background,(0,0))
         pygame.display.flip()
         print(f"Number of blocks: {self.blocks} Score: {self.score} Reward: {self.reward} High Score: {self.highscore}")
@@ -90,7 +91,7 @@ class ArcadeGame:
             if self.blocks > 2:
                 if self.score > self.highscore:
                     self.highscore = self.score
-                    self.new_game()
+                self.new_game()
                 
         return 
 

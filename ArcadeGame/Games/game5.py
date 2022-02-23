@@ -15,14 +15,14 @@ RED = (255,0,0)
 
 class ArcadeGame:
 
-    def __init__(self):
+    def __init__(self, config):
+        self.config = config
         self.window = (SCREEN_WIDTH,SCREEN_HEIGHT)
         self.background = pygame.Surface(self.window)
         self.highscore = 0
         self.edges = [(1,2),(2,3),(1,4),(3,5),(2,5),(4,5),(3,6),(4,6)]
         self.G = nx.Graph()
         self.G.add_edges_from(self.edges)
-        self.new_game()
     
     def draw_screen(self):
         self.background.fill(RED)
@@ -80,13 +80,13 @@ class ArcadeGame:
     def check_solution(self):
         done = False
         if self.is_solution():
-            reward = 10
-            self.score += 10
+            reward = self.config["solution_reward"]
+            self.score += self.config["solution_reward"]
             self.update_link_grid()
             self.new_round()
         else:
             self.blocks += 1
-            reward = -10
+            reward = self.config["rejection_reward"]
             if self.blocks > 2:
                 if self.score > self.highscore:
                     self.highscore = self.score
@@ -131,30 +131,9 @@ class ArcadeGame:
                 grid[self.temp_first_slot+i] = 1
             self.link_grid[edge] = grid
 
+    def seed(self):
+        np.random.seed(self.config["seed"])
+
     def exit(self):
         pygame.quit()
         sys.exit()
-
-def main():
-    done = False
-    game = ArcadeGame()
-    game.render()
-    while True:
-        for event in pygame.event.get():
-            if event.type == pygame.QUIT:
-                game.exit()
-            if event.type == pygame.KEYDOWN:
-                if event.key == pygame.K_RIGHT and game.first_slot < 44 - game.slots:
-                    game.first_slot +=1
-                    game.update_spec_grid()      
-                elif event.key == pygame.K_LEFT and game.first_slot > 0:
-                    game.first_slot -=1
-                    game.update_spec_grid() 
-                elif event.key == pygame.K_RETURN:
-                    game.check_solution()      
-        game.draw_screen()
-        game.render()
-        #print(np.shape(a))
-
-if __name__ == "__main__":
-    main()
