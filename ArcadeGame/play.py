@@ -12,7 +12,7 @@ game_config = {
 
 env = CustomEnv(game_config)
 
-model = DQN.load("Models\deepq_EON5")
+model = DQN.load("Models\solar-microwave-1\model")
 print("loaded")
 
 env.highscore = 0

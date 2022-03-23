@@ -10,7 +10,7 @@ class CustomEnv(Env):
         self.config = config 
         self.game = ArcadeGame(self.config)
         self.action_space = spaces.Discrete(3)
-        self.observation_space = spaces.Box(shape= (SCREEN_WIDTH, SCREEN_HEIGHT,3),low=0,high=255,dtype=np.uint8)
+        self.observation_space = spaces.Box(shape= (SCREEN_WIDTH, SCREEN_HEIGHT, 3),low=0,high=255,dtype=np.uint8)
         
     def step(self, action):
         reward, done, info = 0, False, {} 
@@ -25,7 +25,7 @@ class CustomEnv(Env):
             reward = self.config["left_reward"]
         elif action == 2: # ENTER
             reward, done = self.game.check_solution()
-        
+            
         observation = self.game.draw_screen()
 
         return observation, reward, done, info

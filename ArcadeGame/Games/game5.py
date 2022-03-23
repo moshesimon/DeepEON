@@ -1,8 +1,10 @@
 from itertools import islice
+from pickletools import pystring
 import pygame 
 import numpy as np
 import networkx as nx
 import sys
+import cv2
 SCREEN_WIDTH = 920
 SCREEN_HEIGHT = 150
 COLUMN_COUNT = 8
@@ -23,6 +25,7 @@ class ArcadeGame:
         self.edges = [(1,2),(2,3),(1,4),(3,5),(2,5),(4,5),(3,6),(4,6)]
         self.G = nx.Graph()
         self.G.add_edges_from(self.edges)
+        self.seed()
     
     def draw_screen(self):
         self.background.fill(RED)
@@ -87,22 +90,27 @@ class ArcadeGame:
         else:
             self.blocks += 1
             reward = self.config["rejection_reward"]
+            self.score += self.config["rejection_reward"]
             if self.blocks > 2:
                 if self.score > self.highscore:
                     self.highscore = self.score
                 done = True
         return reward, done
 
-    def is_solution(self):
+    def is_solution(self, first_slot = -1):
         """
         Checks for solution
         """
+        if first_slot == -1:
+            first_slot = self.first_slot
+
         if not self.spec_grid[8] == 1 and not self.spec_grid[17] == 1 and not self.spec_grid[26] == 1 and not self.spec_grid[35] == 1:
-            self.path_selected = self.first_slot//9
+            self.path_selected = first_slot//9
             self.ans_grid = self.path_grid(self.paths[self.path_selected])
-            self.temp_first_slot = self.first_slot - self.path_selected*9
+            self.temp_first_slot = first_slot - self.path_selected*9
             for row in self.ans_grid.values(): #for spectrum of each link
                 for i in range(self.slots): #for each slot
+                    #print(self.temp_first_slot + i, first_slot)
                     if row[self.temp_first_slot + i] != 0: #if slot in spectrum is occupied 
                         return False
             return True
