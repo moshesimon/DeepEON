@@ -6,6 +6,8 @@ from wandb.integration.sb3 import WandbCallback
 import wandb
 import argparse
 from datetime import datetime
+import os
+import pathlib
 
 
 parse = False
@@ -35,7 +37,16 @@ model_config = {
   "learning_starts":50000,
   "target_update_interval":10000,
   "train_freq":(4, "step"),
-  "total_timesteps":1000000
+  "total_timesteps":10000000,
+  "save_every_timesteps":100000,
+  "solution_reward": 10,
+  "rejection_reward": -10,
+  "left_reward": 0,
+  "right_reward": 0,
+  "seed": 0,
+  "max_blocks": 1,
+  "number_of_slots": 16,
+  "K": 3,
 }
 
 config = model_config
@@ -56,22 +67,20 @@ if parse:
     "learning_starts":int(args.learning_starts),
     "target_update_interval":int(args.target_update_interval),
     "train_freq":int(args.train_freq),
-    "total_timesteps":int(args.total_timesteps)
+    "total_timesteps":int(args.total_timesteps),
+    "solution_reward": 10,
+    "rejection_reward": -10,
+    "left_reward": 0,
+    "right_reward": 0,
+    "seed": 0,
+    "max_blocks": 1
   }
   
   config = args_config
 
-game_config = {
-  "solution_reward": 10,
-  "rejection_reward": -10,
-  "left_reward": 0,
-  "right_reward": 0,
-  "seed": 0,
-  "max_blocks": 1
-}
 
 
-current_date_time = datetime.now().strftime("%m/%d/%Y_%H:%M:%S")
+current_date_time = datetime.now().strftime("%m.%d.%Y_%H.%M.%S")
 
 run = wandb.init(
   project = "DeepEON",
@@ -81,7 +90,7 @@ run = wandb.init(
   sync_tensorboard=True,  # auto-upload sb3's tensorboard metrics
 )
 
-env = CustomEnv(game_config)
+env = CustomEnv(config)
 
 model = DQN(CnnPolicy, 
             env, verbose=1, 
@@ -96,10 +105,14 @@ model = DQN(CnnPolicy,
             train_freq=config["train_freq"]
 )
 
-model.learn(total_timesteps=config["total_timesteps"], 
-            callback=WandbCallback(model_save_path = f"Models/{run.name}",
-            verbose = 2,),
-            )
+#os.mkdir(os.path.join(os.getcwd(), "Models", run.name))
+for i in range(1, int(config["total_timesteps"] / config["save_every_timesteps"]) + 1):
+    model.learn(
+        total_timesteps=config["save_every_timesteps"], 
+        callback=WandbCallback(model_save_path = os.path.join("Models", f"{run.name}", f"{config['save_every_timesteps']*i}") ,verbose = 2,),
+        tb_log_name=f"{run.name}",
+        reset_num_timesteps=False
+    ) 
 run.finish()
 env.close()
 
