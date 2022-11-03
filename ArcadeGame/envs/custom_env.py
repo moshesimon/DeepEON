@@ -1,11 +1,12 @@
 from gym import Env
 from gym import spaces
 import numpy as np
-from Games.game5 import ArcadeGame, SCREEN_HEIGHT,SCREEN_WIDTH
+from Games.game6 import ArcadeGame, SCREEN_HEIGHT,SCREEN_WIDTH,COLUMN_COUNT,K
 
 class CustomEnv(Env):
     metadata = {'render.modes': ['human', 'rgb_array']}
     num_envs = 1
+    
     def __init__(self, config):
         self.config = config 
         self.game = ArcadeGame(self.config)
@@ -14,13 +15,18 @@ class CustomEnv(Env):
         
     def step(self, action):
         reward, done, info = 0, False, {} 
-
-        if action == 0 and self.game.first_slot < 44-self.game.slots: # RIGHT
-            self.game.first_slot +=1
+        if action == 0 and self.game.first_slot < COLUMN_COUNT*K + K-1 - self.game.slots: # RIGHT
+            if self.game.first_slot + self.game.slots in self.game.gaps:
+                self.game.first_slot += self.game.slots + 1
+            else:
+                self.game.first_slot +=1
             self.game.update_spec_grid()
             reward = self.config["right_reward"]
         elif action == 1 and self.game.first_slot > 0: #LEFT
-            self.game.first_slot -=1
+            if self.game.first_slot - 1 in self.game.gaps:
+                self.game.first_slot -= self.game.slots + 1
+            else:
+                self.game.first_slot -=1
             self.game.update_spec_grid()
             reward = self.config["left_reward"]
         elif action == 2: # ENTER
@@ -35,11 +41,9 @@ class CustomEnv(Env):
         observation = self.game.draw_screen()
         return observation 
 
-    def render(self, mode='human'):
+    def render(self, mode='rgb_array'):
         if mode == 'rgb_array':
             return self.game.draw_screen() # return RGB frame suitable for video
-        elif mode == 'human':
-            self.game.render() # pop up a window and render
         else:
             super(CustomEnv, self).render(mode=mode) # just raise an exceptionset
         

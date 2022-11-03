@@ -5,8 +5,10 @@ from envs.custom_env import CustomEnv
 from wandb.integration.sb3 import WandbCallback
 import wandb
 import argparse
+from datetime import datetime
 
-parse = True
+
+parse = False
 # Build your ArgumentParser however you like
 def setup_parser():
   parser = argparse.ArgumentParser()
@@ -24,16 +26,16 @@ def setup_parser():
 
 
 model_config = {
-  "buffer_size":10000, 
+  "buffer_size":100000, 
   "batch_size":32,
   "exploration_final_eps":0.1,
-  "exploration_fraction":0.5,
-  "gamma":0.999,
-  "learning_rate":0.00025,
+  "exploration_fraction":0.75,
+  "gamma":0.995,
+  "learning_rate":0.001,
   "learning_starts":50000,
   "target_update_interval":10000,
-  "train_freq":4,
-  "total_timesteps":100000
+  "train_freq":(4, "step"),
+  "total_timesteps":1000000
 }
 
 config = model_config
@@ -64,11 +66,17 @@ game_config = {
   "rejection_reward": -10,
   "left_reward": 0,
   "right_reward": 0,
-  "seed": 0
+  "seed": 0,
+  "max_blocks": 1
 }
 
+
+current_date_time = datetime.now().strftime("%m/%d/%Y_%H:%M:%S")
+
 run = wandb.init(
-  project = "EON",
+  project = "DeepEON",
+  entity="deepeon",
+  name=f"{current_date_time}",
   config=config,
   sync_tensorboard=True,  # auto-upload sb3's tensorboard metrics
 )
@@ -77,7 +85,7 @@ env = CustomEnv(game_config)
 
 model = DQN(CnnPolicy, 
             env, verbose=1, 
-            tensorboard_log=f"./tensorboardEON/{run.id}", 
+            tensorboard_log=f"./tensorboardEON/{run.name}", 
             learning_starts=config["learning_starts"],
             buffer_size=config["buffer_size"],
             batch_size=config["batch_size"],

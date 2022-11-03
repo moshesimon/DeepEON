@@ -9,7 +9,7 @@ from typing import Optional
 import matplotlib.pyplot as plt
 import pandas as pd
 
-
+DEEPEON_NAME = "deepq_EON5"
 
 
 
@@ -55,15 +55,15 @@ game_config = {
   "rejection_reward": -10,
   "left_reward": 0,
   "right_reward": 0,
-  "seed": 1
+  "seed": 4
 }
+
 env = CustomEnv(game_config)
-env.seed(0)
-kwargs = {"policy_kwargs":{"replay_buffer_kwargs":True}}
-model = DQN.load("Models\mild-sweep-13\model",kwargs=kwargs)
+env.seed(game_config["seed"])
+model = DQN.load(f"Models/{DEEPEON_NAME}")
 print("Loaded")
 model.set_env(env)
 episode_rewards, episode_lengths = evaluate(model,env,n_episodes,render=False)
 index = np.arange(0,n_episodes)
 df = pd.DataFrame({"index":index,"Episode Rewards":np.array(episode_rewards), "Episode Lengths": np.array(episode_lengths)})
-df.to_json("Evaluation data\evaluation_mild-sweep-13.json")
+df.to_json(f"Evaluation data/evaluation_{DEEPEON_NAME}_seed_{game_config['seed']}.json")

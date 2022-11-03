@@ -13,7 +13,7 @@ game_config = {
   "rejection_reward": -10,
   "left_reward": 0,
   "right_reward": 0,
-  "seed": 1
+  "seed": 4
 }
  
 game = ArcadeGame(game_config)
@@ -25,7 +25,7 @@ while episode_count < episode_count_targets:
     done = False
     game.new_game()
     game.draw_screen()
-    game.render()
+    #game.render()
     while not done:
         solution = False
         for k in range(K):
@@ -41,13 +41,14 @@ while episode_count < episode_count_targets:
         game.first_slot = fs
         game.update_spec_grid()
         game.draw_screen()
-        game.render()
+        #game.render()
         reward, done = game.check_solution()
         episode_reward += reward
-        print(episode_reward)
+        #print(episode_reward)
     
     episode_rewards.append(episode_reward)
     episode_count += 1
+    print(episode_count)
     
     
 mean_reward = np.mean(episode_rewards)
@@ -56,5 +57,5 @@ print(mean_reward)
 index = np.arange(0,episode_count_targets)
 df = pd.DataFrame({"index":index,"Episode Rewards":np.array(episode_rewards)})
 time = dt.datetime
-df.to_json("Evaluation data\evaluation_huristic_2.json")
+df.to_json(f"Evaluation data\evaluation_KSP_FF_seed_{game_config['seed']}.json")
     
