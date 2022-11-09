@@ -4,11 +4,12 @@ import numpy as np
 import networkx as nx
 import sys
 
-COLUMN_COUNT = 20
-K = 3
+COLUMN_COUNT = 8
+K = 1
+SCREEN_COLUMN_COUNT = 16
 WIDTH = 20
 HEIGHT = 20
-SCREEN_WIDTH = COLUMN_COUNT*WIDTH*K + (K+1)*WIDTH
+SCREEN_WIDTH = SCREEN_COLUMN_COUNT*WIDTH*K + (K+1)*WIDTH
 SCREEN_HEIGHT = 150
 LEFT_SIDE_OFFSET = 1
 PATH_ROWS = 5
@@ -107,13 +108,15 @@ class ArcadeGame:
                 done = True   
         return reward, done
 
-    def is_solution(self):
+    def is_solution(self,first_slot = -1):
         """
         Checks for solution
         """
-        self.path_selected = self.first_slot//(COLUMN_COUNT+1)
+        if first_slot == -1:
+            first_slot = self.first_slot
+        self.path_selected = first_slot//(COLUMN_COUNT+1)
         self.ans_grid = self.path_grid(self.paths[self.path_selected])
-        self.temp_first_slot = self.first_slot - self.path_selected*(COLUMN_COUNT+1)
+        self.temp_first_slot = first_slot - self.path_selected*(COLUMN_COUNT+1)
         for row in self.ans_grid.values(): #for spectrum of each link
             for i in range(self.slots): #for each slot
                 if row[self.temp_first_slot + i] != 0: #if slot in spectrum is occupied 

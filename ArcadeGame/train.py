@@ -45,8 +45,9 @@ model_config = {
   "right_reward": 0,
   "seed": 0,
   "max_blocks": 1,
-  "number_of_slots": 16,
-  "K": 3,
+  "number_of_slots": 8,
+  "screen_number_of_slots": 16,
+  "K": 1,
 }
 
 config = model_config

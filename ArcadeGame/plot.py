@@ -6,11 +6,11 @@ import numpy as np
 "silver-glade-5"
 "DeepEON4"
 "deepq_EON5"
-HEURISTIC_NAME = "KSP_FF"
-DEEPEON_NAME = "mild-sweep-13"
-SEED = "1"
+HEURISTIC_NAME = "KSP_FF_11.04.2022_09.24.44"
+DEEPEON_NAME = "11.04.2022_01.02.31"
+SEED = "0"
 
-df1 = pd.read_json(f"Evaluation data\evaluation_{HEURISTIC_NAME}_seed_{SEED}.json") #baseline
+df1 = pd.read_json(f"Evaluation data\evaluation_{HEURISTIC_NAME}.json") #baseline
 df2 = pd.read_json(f"Evaluation data\evaluation_{DEEPEON_NAME}_seed_{SEED}.json") #DQL
 
 mean_reward1 = np.mean(df1["Episode Rewards"])
@@ -33,7 +33,7 @@ fig, ax = plt.subplots()
 #ax.plot(df1["index"],df2["Episode Rewards"],label = "DeepEON")
 #ax.plot(df1["index"],df1["Episode Rewards"],label = "Baseline")
 
-plt.title(f"{DEEPEON_NAME} vs {HEURISTIC_NAME}")
+plt.title(f"DeepEON with 16 slots vs KSP_FF with 16 slots")
 plt.xlabel("Rounds")
 plt.ylabel("Score")
 
@@ -61,11 +61,11 @@ for i,er in enumerate(df2["Episode Rewards"]):
 
 
 
-ax.plot(df1["index"],df2["Episode Rewards"],label = DEEPEON_NAME)
-ax.plot(df1["index"],df1["Episode Rewards"],label = HEURISTIC_NAME)
+ax.plot(df1["index"],df2["Episode Rewards"],label = "DEEPEON")
+ax.plot(df1["index"],df1["Episode Rewards"],label = "HEURISTIC")
 
 plt.legend()
 
-#plt.show()
+plt.show()
 
 

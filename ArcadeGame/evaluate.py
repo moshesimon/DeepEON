@@ -8,8 +8,10 @@ import gym
 from typing import Optional
 import matplotlib.pyplot as plt
 import pandas as pd
+import os
 
-DEEPEON_NAME = "deepq_EON5"
+DEEPEON_NAME = "11.04.2022_01.02.31"
+TIMESTEPS = 1300000
 
 
 
@@ -55,12 +57,13 @@ game_config = {
   "rejection_reward": -10,
   "left_reward": 0,
   "right_reward": 0,
-  "seed": 4
+  "seed": 0,
+  "max_blocks": 1
 }
 
 env = CustomEnv(game_config)
 env.seed(game_config["seed"])
-model = DQN.load(f"Models/{DEEPEON_NAME}")
+model = DQN.load(os.path.join("Models",f"{DEEPEON_NAME}",f"{TIMESTEPS}","model"))
 print("Loaded")
 model.set_env(env)
 episode_rewards, episode_lengths = evaluate(model,env,n_episodes,render=False)
