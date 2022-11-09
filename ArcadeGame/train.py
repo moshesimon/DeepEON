@@ -74,7 +74,10 @@ if parse:
     "left_reward": 0,
     "right_reward": 0,
     "seed": 0,
-    "max_blocks": 1
+    "max_blocks": 1,
+    "number_of_slots": 8,
+    "screen_number_of_slots": 16,
+    "K": 1,
   }
   
   config = args_config
@@ -106,7 +109,7 @@ model = DQN(CnnPolicy,
             train_freq=config["train_freq"]
 )
 
-#os.mkdir(os.path.join(os.getcwd(), "Models", run.name))
+
 for i in range(1, int(config["total_timesteps"] / config["save_every_timesteps"]) + 1):
     model.learn(
         total_timesteps=config["save_every_timesteps"], 
