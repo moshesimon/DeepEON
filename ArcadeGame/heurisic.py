@@ -13,7 +13,7 @@ game_config = {
   "seed": 0,
   "max_blocks": 1,
 }
- 
+
 game = ArcadeGame(game_config)
 episode_count = 0
 episode_rewards = []
@@ -38,16 +38,16 @@ while episode_count < episode_count_targets:
             game.first_slot = 0
         game.update_spec_grid()
         game.draw_screen()
-        #game.render()
+        # game.render()
         reward, done = game.check_solution()
         episode_reward += reward
-        #print(episode_reward)
-    
+        # print(episode_reward)
+
     episode_rewards.append(episode_reward)
     episode_count += 1
     print(episode_count)
-    
-    
+
+
 mean_reward = np.mean(episode_rewards)
 std_reward = np.std(episode_rewards)
 print(mean_reward)

@@ -40,14 +40,14 @@ model_config = {
   "total_timesteps":100000,
   "save_every_timesteps":100000,
   "solution_reward": 10,
-  "rejection_reward": -10,
-  "left_reward": 0,
-  "right_reward": 0,
+  "rejection_reward": -100,
+  "left_reward": -1,
+  "right_reward": -1,
   "seed": 0,
   "max_blocks": 1,
-  "number_of_slots": 16,
+  "number_of_slots": 16,  # match
   "screen_number_of_slots": 16,
-  "K": 1,
+  "K": 1,  # match
 }
 
 config = model_config
@@ -74,10 +74,7 @@ if parse:
     "left_reward": 0,
     "right_reward": 0,
     "seed": 0,
-    "max_blocks": 1,
-    "number_of_slots": 16,
-    "screen_number_of_slots": 16,
-    "K": 1,
+    "max_blocks": 1
   }
   
   config = args_config

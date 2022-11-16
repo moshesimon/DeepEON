@@ -14,7 +14,6 @@ def record():
     for i in range(len(frame_array)):
         out.write(frame_array[i])
     out.release()
-        
 
 
 game_config = {
@@ -42,9 +41,8 @@ while episodes < 10:
     while not done:
         action, _states = model.predict(obs)
         obs, rewards, done, info = env.step(action)
-        frame = env.render(mode='rgb_array')
+        frame = env.render(mode="rgb_array")
         frame_array.append(frame)
-        
+
 record()
 env.close()
-    

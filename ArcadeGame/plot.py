@@ -2,6 +2,7 @@ from cProfile import label
 import matplotlib.pyplot as plt
 import pandas as pd
 import numpy as np
+
 "solar-microwave-1"
 "silver-glade-5"
 "DeepEON4"
@@ -30,29 +31,29 @@ print(f"{DEEPEON_NAME}: Mean Reward: {mean_reward2}, STD Reward: {std_reward2}")
 
 fig, ax = plt.subplots()
 
-#ax.plot(df1["index"],df2["Episode Rewards"],label = "DeepEON")
-#ax.plot(df1["index"],df1["Episode Rewards"],label = "Baseline")
+# ax.plot(df1["index"],df2["Episode Rewards"],label = "DeepEON")
+# ax.plot(df1["index"],df1["Episode Rewards"],label = "Baseline")
 
 plt.title(f"DeepEON with {SLOTS} slots vs 1_SP_FF with {SLOTS} slots")
 plt.xlabel("Rounds")
 plt.ylabel("Score")
 
-eps = [10,20,30,40,50,60,70,80,90,100]
+eps = [10, 20, 30, 40, 50, 60, 70, 80, 90, 100]
 
 a = 0
 av_rew1 = []
-for i,er in enumerate(df1["Episode Rewards"]):
-    a+=er
-    if (i+1) %10 == 0:
-        av = a /10
+for i, er in enumerate(df1["Episode Rewards"]):
+    a += er
+    if (i + 1) % 10 == 0:
+        av = a / 10
         av_rew1.append(av)
         a = 0
 a = 0
 av_rew2 = []
-for i,er in enumerate(df2["Episode Rewards"]):
-    a+=er
-    if (i+1) %10 == 0:
-        av = a /10
+for i, er in enumerate(df2["Episode Rewards"]):
+    a += er
+    if (i + 1) % 10 == 0:
+        av = a / 10
         av_rew2.append(av)
         a = 0
 

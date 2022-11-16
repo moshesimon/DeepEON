@@ -1,4 +1,3 @@
-
 from stable_baselines3.common import base_class
 from stable_baselines3.common.evaluation import evaluate_policy
 from stable_baselines3.dqn.dqn import DQN
@@ -12,7 +11,6 @@ import os
 
 DEEPEON_NAME = "11.04.2022_01.02.31"
 TIMESTEPS = 1300000
-
 
 
 def evaluate(
@@ -32,22 +30,22 @@ def evaluate(
         done = False
         observation = env.reset()
         while not done:
-            action, state= model.predict(observation, deterministic=deterministic)
+            action, state = model.predict(observation, deterministic=deterministic)
             observation, reward, done, info = env.step(action)
             current_reward += reward
             current_length += 1
             if render:
                 env.render()
-    
+
         episode_rewards.append(current_reward)
         episode_lengths.append(current_length)
         episode_count += 1
-        
+
         if render:
             env.render()
         else:
             print(episode_count)
-    
+
     return episode_rewards, episode_lengths
 
 
@@ -66,7 +64,13 @@ env.seed(game_config["seed"])
 model = DQN.load(os.path.join("Models",f"{DEEPEON_NAME}",f"{TIMESTEPS}","model"))
 print("Loaded")
 model.set_env(env)
-episode_rewards, episode_lengths = evaluate(model,env,n_episodes,render=False)
-index = np.arange(0,n_episodes)
-df = pd.DataFrame({"index":index,"Episode Rewards":np.array(episode_rewards), "Episode Lengths": np.array(episode_lengths)})
+episode_rewards, episode_lengths = evaluate(model, env, n_episodes, render=False)
+index = np.arange(0, n_episodes)
+df = pd.DataFrame(
+    {
+        "index": index,
+        "Episode Rewards": np.array(episode_rewards),
+        "Episode Lengths": np.array(episode_lengths),
+    }
+)
 df.to_json(f"Evaluation data/evaluation_{DEEPEON_NAME}_seed_{game_config['seed']}.json")
