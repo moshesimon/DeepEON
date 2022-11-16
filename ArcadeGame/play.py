@@ -1,5 +1,5 @@
 import pygame
-from stable_baselines3 import DQN
+from stable_baselines3.dqn.dqn import DQN
 from envs.custom_env import CustomEnv
 
 game_config = {
@@ -12,10 +12,10 @@ game_config = {
 
 env = CustomEnv(game_config)
 
-model = DQN.load("Models\silver-glade-5\model")
+model = DQN.load("Models/silver-glade-5/model")
 print("loaded")
 
-env.highscore = 0
+env.game.highscore = 0
 while True:
     
     obs = env.reset()

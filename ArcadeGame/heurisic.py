@@ -1,7 +1,4 @@
 from datetime import datetime
-import pygame
-from stable_baselines3 import DQN
-from envs.custom_env import CustomEnv
 from Games.game6 import ArcadeGame, K, COLUMN_COUNT
 import numpy as np
 import pandas as pd
@@ -25,7 +22,7 @@ while episode_count < episode_count_targets:
     done = False
     game.new_game()
     game.draw_screen()
-    #game.render()
+    game.render()
     while not done:
         solution = False
         for k in range(K):
@@ -57,5 +54,5 @@ print(mean_reward)
 index = np.arange(0,episode_count_targets)
 df = pd.DataFrame({"index":index,"Episode Rewards":np.array(episode_rewards)})
 current_date_time = datetime.now().strftime("%m.%d.%Y_%H.%M.%S")
-df.to_json(f"Evaluation data\evaluation_KSP_FF_{current_date_time}.json")
+df.to_json(f"Evaluation data/evaluation_{K}_SP_FF_{current_date_time}.json")
     

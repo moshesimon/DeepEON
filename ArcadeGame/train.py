@@ -1,7 +1,7 @@
 from random import seed
-from stable_baselines3.dqn import CnnPolicy
-from stable_baselines3 import DQN
-from envs.custom_env import CustomEnv
+from stable_baselines3.dqn.policies import CnnPolicy
+from stable_baselines3.dqn.dqn import DQN
+from envs.custom_env2 import CustomEnv
 from wandb.integration.sb3 import WandbCallback
 import wandb
 import argparse
@@ -28,16 +28,16 @@ def setup_parser():
 
 
 model_config = {
-  "buffer_size":100000, 
+  "buffer_size":1000, 
   "batch_size":32,
   "exploration_final_eps":0.1,
   "exploration_fraction":0.75,
   "gamma":0.995,
   "learning_rate":0.001,
-  "learning_starts":50000,
+  "learning_starts":1000,
   "target_update_interval":10000,
   "train_freq":(4, "step"),
-  "total_timesteps":10000000,
+  "total_timesteps":100000,
   "save_every_timesteps":100000,
   "solution_reward": 10,
   "rejection_reward": -10,
@@ -45,7 +45,7 @@ model_config = {
   "right_reward": 0,
   "seed": 0,
   "max_blocks": 1,
-  "number_of_slots": 8,
+  "number_of_slots": 16,
   "screen_number_of_slots": 16,
   "K": 1,
 }
@@ -75,7 +75,7 @@ if parse:
     "right_reward": 0,
     "seed": 0,
     "max_blocks": 1,
-    "number_of_slots": 8,
+    "number_of_slots": 16,
     "screen_number_of_slots": 16,
     "K": 1,
   }
@@ -86,7 +86,7 @@ if parse:
 
 current_date_time = datetime.now().strftime("%m.%d.%Y_%H.%M.%S")
 
-run = wandb.init(
+wandb.init(
   project = "DeepEON",
   entity="deepeon",
   name=f"{current_date_time}",
@@ -94,11 +94,12 @@ run = wandb.init(
   sync_tensorboard=True,  # auto-upload sb3's tensorboard metrics
 )
 
+
 env = CustomEnv(config)
 
 model = DQN(CnnPolicy, 
             env, verbose=1, 
-            tensorboard_log=f"./tensorboardEON/{run.name}", 
+            tensorboard_log=f"./tensorboardEON/{wandb.run.name}", 
             learning_starts=config["learning_starts"],
             buffer_size=config["buffer_size"],
             batch_size=config["batch_size"],
@@ -113,10 +114,10 @@ model = DQN(CnnPolicy,
 for i in range(1, int(config["total_timesteps"] / config["save_every_timesteps"]) + 1):
     model.learn(
         total_timesteps=config["save_every_timesteps"], 
-        callback=WandbCallback(model_save_path = os.path.join("Models", f"{run.name}", f"{config['save_every_timesteps']*i}") ,verbose = 2,),
-        tb_log_name=f"{run.name}",
+        callback=WandbCallback(model_save_path = os.path.join("Models", f"{wandb.run.name}", f"{config['save_every_timesteps']*i}") ,verbose = 2,),
+        tb_log_name=f"{wandb.run.name}",
         reset_num_timesteps=False
     ) 
-run.finish()
+wandb.run.finish()
 env.close()
 

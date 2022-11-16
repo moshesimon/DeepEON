@@ -6,12 +6,12 @@ import numpy as np
 "silver-glade-5"
 "DeepEON4"
 "deepq_EON5"
-HEURISTIC_NAME = "KSP_FF_11.04.2022_09.24.44"
-DEEPEON_NAME = "11.04.2022_01.02.31"
-SEED = "0"
+HEURISTIC_NAME = "1_SP_FF_11.15.2022_14.28.09"
+DEEPEON_NAME = "11.09.2022_10.05.53"
+SLOTS = "8"
 
-df1 = pd.read_json(f"Evaluation data\evaluation_{HEURISTIC_NAME}.json") #baseline
-df2 = pd.read_json(f"Evaluation data\evaluation_{DEEPEON_NAME}_seed_{SEED}.json") #DQL
+df1 = pd.read_json(f"Evaluation data\evaluation_{HEURISTIC_NAME}_slots_{SLOTS}.json") #baseline
+df2 = pd.read_json(f"Evaluation data\evaluation_{DEEPEON_NAME}_slots_{SLOTS}.json") #DQL
 
 mean_reward1 = np.mean(df1["Episode Rewards"])
 std_reward1 = np.std(df1["Episode Rewards"])
@@ -33,7 +33,7 @@ fig, ax = plt.subplots()
 #ax.plot(df1["index"],df2["Episode Rewards"],label = "DeepEON")
 #ax.plot(df1["index"],df1["Episode Rewards"],label = "Baseline")
 
-plt.title(f"DeepEON with 16 slots vs KSP_FF with 16 slots")
+plt.title(f"DeepEON with {SLOTS} slots vs 1_SP_FF with {SLOTS} slots")
 plt.xlabel("Rounds")
 plt.ylabel("Score")
 

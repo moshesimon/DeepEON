@@ -1,7 +1,7 @@
 
 from stable_baselines3.common import base_class
 from stable_baselines3.common.evaluation import evaluate_policy
-from stable_baselines3 import DQN
+from stable_baselines3.dqn.dqn import DQN
 from envs.custom_env import CustomEnv
 import numpy as np
 import gym

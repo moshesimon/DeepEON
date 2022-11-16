@@ -4,7 +4,7 @@ import numpy as np
 import networkx as nx
 import sys
 
-COLUMN_COUNT = 8
+COLUMN_COUNT = 16
 K = 1
 SCREEN_COLUMN_COUNT = 16
 WIDTH = 20
@@ -87,8 +87,12 @@ class ArcadeGame:
 
     def update_spec_grid(self):
         self.spec_grid = np.zeros(COLUMN_COUNT*K + K-1, dtype= int)
-        for i in range(self.slots):
-            self.spec_grid[self.first_slot+i] = 1
+        try:
+            for i in range(self.slots):
+                self.spec_grid[self.first_slot+i] = 1
+            return 0, False
+        except:
+            return self.config["rejection_reward"], True
 
     def check_solution(self):
         done = False
