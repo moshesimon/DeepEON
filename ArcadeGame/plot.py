@@ -11,8 +11,12 @@ HEURISTIC_NAME = "1_SP_FF_11.15.2022_14.28.09"
 DEEPEON_NAME = "11.09.2022_10.05.53"
 SLOTS = "8"
 
-df1 = pd.read_json(f"Evaluation data\evaluation_{HEURISTIC_NAME}_slots_{SLOTS}.json") #baseline
-df2 = pd.read_json(f"Evaluation data\evaluation_{DEEPEON_NAME}_slots_{SLOTS}.json") #DQL
+df1 = pd.read_json(
+    f"Evaluation data\evaluation_{HEURISTIC_NAME}_slots_{SLOTS}.json"
+)  # baseline
+df2 = pd.read_json(
+    f"Evaluation data\evaluation_{DEEPEON_NAME}_slots_{SLOTS}.json"
+)  # DQL
 
 mean_reward1 = np.mean(df1["Episode Rewards"])
 std_reward1 = np.std(df1["Episode Rewards"])
@@ -61,12 +65,9 @@ for i, er in enumerate(df2["Episode Rewards"]):
 # ax.plot(eps,av_rew1,label = HEURISTIC_NAME)
 
 
-
-ax.plot(df1["index"],df2["Episode Rewards"],label = "DEEPEON")
-ax.plot(df1["index"],df1["Episode Rewards"],label = "HEURISTIC")
+ax.plot(df1["index"], df2["Episode Rewards"], label="DEEPEON")
+ax.plot(df1["index"], df1["Episode Rewards"], label="HEURISTIC")
 
 plt.legend()
 
 plt.show()
-
-

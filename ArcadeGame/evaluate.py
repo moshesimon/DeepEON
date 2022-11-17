@@ -51,17 +51,17 @@ def evaluate(
 
 n_episodes = 100
 game_config = {
-  "solution_reward": 10,
-  "rejection_reward": -10,
-  "left_reward": 0,
-  "right_reward": 0,
-  "seed": 0,
-  "max_blocks": 1
+    "solution_reward": 10,
+    "rejection_reward": -10,
+    "left_reward": 0,
+    "right_reward": 0,
+    "seed": 0,
+    "max_blocks": 1,
 }
 
 env = CustomEnv(game_config)
 env.seed(game_config["seed"])
-model = DQN.load(os.path.join("Models",f"{DEEPEON_NAME}",f"{TIMESTEPS}","model"))
+model = DQN.load(os.path.join("Models", f"{DEEPEON_NAME}", f"{TIMESTEPS}", "model"))
 print("Loaded")
 model.set_env(env)
 episode_rewards, episode_lengths = evaluate(model, env, n_episodes, render=False)

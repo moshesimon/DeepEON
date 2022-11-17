@@ -1,7 +1,7 @@
 from gym import Env
 from gym import spaces
 import numpy as np
-from Games.game6 import ArcadeGame, SCREEN_HEIGHT, SCREEN_WIDTH, COLUMN_COUNT, K
+from Games.game6 import ArcadeGame, SCREEN_HEIGHT, SCREEN_WIDTH, COLUMN_COUNT, SCREEN_COLUMN_COUNT, K
 
 
 class CustomEnv(Env):

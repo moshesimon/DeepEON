@@ -4,11 +4,12 @@ import numpy as np
 import networkx as nx
 import sys
 
-COLUMN_COUNT = 16  # match in train.py
-K = 1  # match in train.py
+COLUMN_COUNT = 16  # set here
+SCREEN_COLUMN_COUNT = 16  # set here
+K = 1  # set here
 WIDTH = 20
 HEIGHT = 20
-SCREEN_WIDTH = SCREEN_COLUMN_COUNT*WIDTH*K + (K+1)*WIDTH
+SCREEN_WIDTH = SCREEN_COLUMN_COUNT * WIDTH * K + (K + 1) * WIDTH
 SCREEN_HEIGHT = 150
 LEFT_SIDE_OFFSET = 1
 PATH_ROWS = 5
@@ -97,10 +98,10 @@ class ArcadeGame:
         self.update_spec_grid()  # populate spectrum grid
 
     def update_spec_grid(self):
-        self.spec_grid = np.zeros(COLUMN_COUNT*K + K-1, dtype= int)
+        self.spec_grid = np.zeros(COLUMN_COUNT * K + K - 1, dtype=int)
         try:
             for i in range(self.slots):
-                self.spec_grid[self.first_slot+i] = 1
+                self.spec_grid[self.first_slot + i] = 1
             return 0, False
         except:
             return self.config["rejection_reward"], True
@@ -123,18 +124,20 @@ class ArcadeGame:
                 done = True
         return reward, done
 
-    def is_solution(self,first_slot = -1):
+    def is_solution(self, first_slot=-1):
         """
         Checks for solution
         """
         if first_slot == -1:
             first_slot = self.first_slot
-        self.path_selected = first_slot//(COLUMN_COUNT+1)
+        self.path_selected = first_slot // (COLUMN_COUNT + 1)
         self.ans_grid = self.path_grid(self.paths[self.path_selected])
-        self.temp_first_slot = first_slot - self.path_selected*(COLUMN_COUNT+1)
-        for row in self.ans_grid.values(): #for spectrum of each link
-            for i in range(self.slots): #for each slot
-                if row[self.temp_first_slot + i] != 0: #if slot in spectrum is occupied 
+        self.temp_first_slot = first_slot - self.path_selected * (COLUMN_COUNT + 1)
+        for row in self.ans_grid.values():  # for spectrum of each link
+            for i in range(self.slots):  # for each slot
+                if (
+                    row[self.temp_first_slot + i] != 0
+                ):  # if slot in spectrum is occupied
                     return False
         return True
 
@@ -168,7 +171,7 @@ class ArcadeGame:
         sys.exit()
 
 
-def main():
+def main():  # only used for human mode
     done = False
     game_config = {
         "solution_reward": 10,
