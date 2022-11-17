@@ -35,6 +35,7 @@ game_config = {
 env = CustomEnv(game_config)
 model = DQN.load(os.path.join("Models", f"{DEEPEON_NAME}", f"{TIMESTEPS}", "model"))
 
+model = DQN.load("Models/400-model")
 print("loaded")
 
 env.highscore = 0
