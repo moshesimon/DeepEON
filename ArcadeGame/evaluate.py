@@ -57,7 +57,7 @@ game_config = {
     "left_reward": all_configs["left_reward"],
     "right_reward": all_configs["right_reward"],
     "seed": all_configs["seed"],
-    "max_blocks": all_configs["max_blocks"]
+    "max_blocks": all_configs["max_blocks"],
 }
 
 env = CustomEnv(game_config)

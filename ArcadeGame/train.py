@@ -32,7 +32,7 @@ model_config = {
     "number_of_slots": all_configs["number_of_slots"],
     "screen_number_of_slots": all_configs["screen_number_of_slots"],
     "K": all_configs["K"],
-    "solution_reward": all_configs["solution_reward"]
+    "solution_reward": all_configs["solution_reward"],
     "rejection_reward": all_configs["rejection_reward"],
     "left_reward": all_configs["left_reward"],
     "right_reward": all_configs["right_reward"],
