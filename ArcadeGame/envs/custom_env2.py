@@ -1,14 +1,14 @@
 from gym import Env
 from gym import spaces
 import numpy as np
-from Games.game6 import (
-    ArcadeGame,
-    SCREEN_HEIGHT,
-    SCREEN_WIDTH,
-    COLUMN_COUNT,
-    SCREEN_COLUMN_COUNT,
-    K,
-)
+from Games.game6 import ArcadeGame
+from config import all_configs
+
+SCREEN_HEIGHT = all_configs["screen_height"]
+SCREEN_WIDTH = all_configs["screen_width"]
+COLUMN_COUNT = all_configs["column_count"]
+SCREEN_COLUMN_COUNT = all_configs["screen_column_count"]
+K = all_configs["K"]
 
 
 class CustomEnv(Env):
@@ -18,7 +18,7 @@ class CustomEnv(Env):
     def __init__(self, config):
         self.config = config
         self.game = ArcadeGame(self.config)
-        self.action_space = spaces.Discrete(COLUMN_COUNT * K + K - 1)
+        self.action_space = spaces.Discrete(column_count * K + K - 1)
         self.observation_space = spaces.Box(
             shape=(SCREEN_WIDTH, SCREEN_HEIGHT, 3), low=0, high=255, dtype=np.uint8
         )

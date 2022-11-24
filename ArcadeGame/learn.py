@@ -7,19 +7,9 @@ import wandb
 import argparse
 from datetime import datetime
 import os
+from config import current_dir, game_config
 
-
-game_config = {
-    "solution_reward": 10,
-    "rejection_reward": -10,
-    "left_reward": 0,
-    "right_reward": 0,
-    "seed": 0,
-    "max_blocks": 1,
-}
-
-current_dir = os.path.dirname(os.path.abspath(__file__))
-current_date_time = datetime.now().strftime("%m/%d/%Y_%H:%M:%S")
+current_date_time = datetime.now().strftime("%m.%d.%Y_%H.%M.%S")
 
 # print("model loaded")
 # parms = model.get_parameters()

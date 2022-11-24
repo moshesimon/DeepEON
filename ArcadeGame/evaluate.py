@@ -7,11 +7,11 @@ import gym
 from typing import Optional
 import matplotlib.pyplot as plt
 import pandas as pd
-import os
+import config
+from config import current_dir, all_configs
 
 DEEPEON_NAME = "11.04.2022_01.02.31"
 TIMESTEPS = 1300000
-current_dir = os.path.dirname(os.path.abspath(__file__))
 
 
 def evaluate(
@@ -52,12 +52,12 @@ def evaluate(
 
 n_episodes = 100
 game_config = {
-    "solution_reward": 10,
-    "rejection_reward": -10,
-    "left_reward": 0,
-    "right_reward": 0,
-    "seed": 0,
-    "max_blocks": 1,
+    "solution_reward": all_configs["solution_reward"],
+    "rejection_reward": all_configs["rejection_reward"],
+    "left_reward": all_configs["left_reward"],
+    "right_reward": all_configs["right_reward"],
+    "seed": all_configs["seed"],
+    "max_blocks": all_configs["max_blocks"]
 }
 
 env = CustomEnv(game_config)

@@ -2,20 +2,12 @@ from datetime import datetime
 from Games.game6 import ArcadeGame, K, COLUMN_COUNT
 import numpy as np
 import pandas as pd
-from datetime import datetime
+from datetime import current_date_time
 import os
+from config import current_dir, game_config
 
 episode_count_targets = 100
-game_config = {
-    "solution_reward": 10,
-    "rejection_reward": -10,
-    "left_reward": 0,
-    "right_reward": 0,
-    "seed": 0,
-    "max_blocks": 1,
-}
 
-current_dir = os.path.dirname(os.path.abspath(__file__))
 game = ArcadeGame(game_config)
 episode_count = 0
 episode_rewards = []

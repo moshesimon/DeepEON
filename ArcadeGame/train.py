@@ -8,6 +8,7 @@ import argparse
 from datetime import datetime
 import os
 import pathlib
+from config import current_dir, all_configs
 
 
 parse = False
@@ -28,26 +29,26 @@ def setup_parser():
 
 
 model_config = {
-    "number_of_slots": COLUMN_COUNT,  # set in custom env file
-    "screen_number_of_slots": SCREEN_COLUMN_COUNT,  # set in custom env file
-    "K": K,  # set in custom env file
-    "solution_reward": 10,
-    "rejection_reward": -10,
-    "left_reward": 0,
-    "right_reward": 0,
-    "seed": 0,
-    "max_blocks": 1,
-    "total_timesteps": 10000000,
-    "save_every_timesteps": 1000000,
-    "buffer_size": 100000,
-    "batch_size": 32,
-    "exploration_final_eps": 0.1,
-    "exploration_fraction": 0.75,
-    "gamma": 0.995,
-    "learning_rate": 0.001,
-    "learning_starts": 100000,
-    "target_update_interval": 10000,
-    "train_freq": (4, "step"),
+    "number_of_slots": all_configs["number_of_slots"],
+    "screen_number_of_slots": all_configs["screen_number_of_slots"],
+    "K": all_configs["K"],
+    "solution_reward": all_configs["solution_reward"]
+    "rejection_reward": all_configs["rejection_reward"],
+    "left_reward": all_configs["left_reward"],
+    "right_reward": all_configs["right_reward"],
+    "seed": all_configs["seed"],
+    "max_blocks": all_configs["max_blocks"],
+    "total_timesteps": all_configs["total_timesteps"],
+    "save_every_timesteps": all_configs["save_every_timesteps"],
+    "buffer_size": all_configs["buffer_size"],
+    "batch_size": all_configs["batch_size"],
+    "exploration_final_eps": all_configs["exploration_final_eps"],
+    "exploration_fraction": all_configs["exploration_fraction"],
+    "gamma": all_configs["gamma"],
+    "learning_rate": all_configs["learning_rate"],
+    "learning_starts": all_configs["learning_starts"],
+    "target_update_interval": all_configs["target_update_interval"],
+    "train_freq": all_configs["train_freq"],
 }
 
 config = model_config
@@ -97,7 +98,7 @@ model = DQN(
     CnnPolicy,
     env,
     verbose=1,
-    tensorboard_log=f"./tensorboardEON/{wandb.run.name}",
+    tensorboard_log=os.path.join("tensorboardEON", wandb.run.name),
     learning_starts=config["learning_starts"],
     buffer_size=config["buffer_size"],
     batch_size=config["batch_size"],

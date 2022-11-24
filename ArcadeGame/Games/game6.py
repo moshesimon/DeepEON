@@ -3,21 +3,22 @@ import pygame
 import numpy as np
 import networkx as nx
 import sys
+from config import all_configs
 
-COLUMN_COUNT = 16  # set here
-SCREEN_COLUMN_COUNT = 16  # set here
-K = 3  # set here
-WIDTH = 20
-HEIGHT = 20
-SCREEN_WIDTH = SCREEN_COLUMN_COUNT * WIDTH * K + (K + 1) * WIDTH
-SCREEN_HEIGHT = 150
-LEFT_SIDE_OFFSET = 1
-PATH_ROWS = 5
-SPECTRUM_SLOTS_ROW_FROM_TOP = 6
-WHITE = (255, 255, 255)
-BLACK = (0, 0, 0)
-GREEN = (0, 255, 0)
-RED = (255, 0, 0)
+COLUMN_COUNT = all_configs["number_of_slots"]
+SCREEN_COLUMN_COUNT = all_configs["screen_number_of_slots"]
+K = all_configs["K"]
+WIDTH = all_configs["width"]
+HEIGHT = all_configs["height"]
+SCREEN_WIDTH = all_configs["screen_width"]
+SCREEN_HEIGHT = all_configs["screen_height"]
+LEFT_SIDE_OFFSET = all_configs["left_side_offset"]
+PATH_ROWS = all_configs["path_rows"]
+SPECTRUM_SLOTS_ROWS_FROM_TOP = all_configs["spectrum_slots_rows_from_top"]
+WHITE = all_configs["white"]
+BLACK = all_configs["black"]
+GREEN = all_configs["green"]
+RED = all_configs["red"]
 
 
 class ArcadeGame:
@@ -55,11 +56,11 @@ class ArcadeGame:
         for column in range(COLUMN_COUNT * K + K - 1):  # print slots
             if self.spec_grid[column] == 0:
                 self.draw_box(
-                    column + LEFT_SIDE_OFFSET, SPECTRUM_SLOTS_ROW_FROM_TOP, RED
+                    column + LEFT_SIDE_OFFSET, SPECTRUM_SLOTS_ROWS_FROM_TOP, RED
                 )
             else:
                 self.draw_box(
-                    column + LEFT_SIDE_OFFSET, SPECTRUM_SLOTS_ROW_FROM_TOP, GREEN
+                    column + LEFT_SIDE_OFFSET, SPECTRUM_SLOTS_ROWS_FROM_TOP, GREEN
                 )
 
         self.surfarr = pygame.surfarray.array3d(self.background)

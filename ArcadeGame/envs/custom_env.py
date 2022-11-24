@@ -1,14 +1,14 @@
 from gym import Env
 from gym import spaces
 import numpy as np
-from Games.game6 import (
-    ArcadeGame,
-    SCREEN_HEIGHT,
-    SCREEN_WIDTH,
-    COLUMN_COUNT,
-    SCREEN_COLUMN_COUNT,
-    K,
-)
+from Games.game6 import ArcadeGame
+from config import all_configs
+
+SCREEN_HEIGHT = all_configs["screen_height"]
+SCREEN_WIDTH = all_configs["screen_width"]
+COLUMN_COUNT = all_configs["column_count"]
+SCREEN_COLUMN_COUNT = all_configs["screen_column_count"]
+K = all_configs["K"]
 
 
 class CustomEnv(Env):
