@@ -2,6 +2,7 @@ from cProfile import label
 import matplotlib.pyplot as plt
 import pandas as pd
 import numpy as np
+import os
 
 "solar-microwave-1"
 "silver-glade-5"
@@ -11,9 +12,18 @@ HEURISTIC_NAME = "1_SP_FF_11.15.2022_14.28.09"
 DEEPEON_NAME = "11.09.2022_10.05.53"
 SLOTS = "8"
 SEED = "0"
+current_dir = os.path.dirname(os.path.abspath(__file__))
 
-df1 = pd.read_json(f"Evaluations/evaluation_{HEURISTIC_NAME}_slots_{SLOTS}.json") #baseline
-df2 = pd.read_json(f"Evaluations/evaluation_{HEURISTIC_NAME}_slots_{SLOTS}.json") #DQL
+df1 = pd.read_json(
+    os.path.join(
+        current_dir, "Evaluations", f"evaluation_{HEURISTIC_NAME}_slots_{SLOTS}.json"
+    )
+)  # baseline
+df2 = pd.read_json(
+    os.path.join(
+        current_dir, "Evaluations", f"evaluation_{HEURISTIC_NAME}_slots_{SLOTS}.json"
+    )
+)  # DQL
 
 mean_reward1 = np.mean(df1["Episode Rewards"])
 std_reward1 = np.std(df1["Episode Rewards"])

@@ -6,7 +6,7 @@ import sys
 
 COLUMN_COUNT = 16  # set here
 SCREEN_COLUMN_COUNT = 16  # set here
-K = 1  # set here
+K = 3  # set here
 WIDTH = 20
 HEIGHT = 20
 SCREEN_WIDTH = SCREEN_COLUMN_COUNT * WIDTH * K + (K + 1) * WIDTH

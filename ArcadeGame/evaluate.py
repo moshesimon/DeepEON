@@ -11,6 +11,7 @@ import os
 
 DEEPEON_NAME = "11.04.2022_01.02.31"
 TIMESTEPS = 1300000
+current_dir = os.path.dirname(os.path.abspath(__file__))
 
 
 def evaluate(
@@ -61,7 +62,9 @@ game_config = {
 
 env = CustomEnv(game_config)
 env.seed(game_config["seed"])
-model = DQN.load(os.path.join("Models", f"{DEEPEON_NAME}", f"{TIMESTEPS}", "model"))
+model = DQN.load(
+    os.path.join(current_dir, "Models", f"{DEEPEON_NAME}", f"{TIMESTEPS}", "model")
+)
 print("Loaded")
 model.set_env(env)
 episode_rewards, episode_lengths = evaluate(model, env, n_episodes, render=False)
@@ -73,4 +76,10 @@ df = pd.DataFrame(
         "Episode Lengths": np.array(episode_lengths),
     }
 )
-df.to_json(f"Evaluation data/evaluation_{DEEPEON_NAME}_seed_{game_config['seed']}.json")
+df.to_json(
+    os.path.join(
+        current_dir,
+        "Evaluations",
+        f"evaluation_{DEEPEON_NAME}_seed_{game_config['seed']}.json",
+    )
+)

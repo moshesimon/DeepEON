@@ -18,7 +18,7 @@ class CustomEnv(Env):
     def __init__(self, config):
         self.config = config
         self.game = ArcadeGame(self.config)
-        self.action_space = spaces.Discrete(16)
+        self.action_space = spaces.Discrete(COLUMN_COUNT * K + K - 1)
         self.observation_space = spaces.Box(
             shape=(SCREEN_WIDTH, SCREEN_HEIGHT, 3), low=0, high=255, dtype=np.uint8
         )

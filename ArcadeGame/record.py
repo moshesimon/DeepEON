@@ -6,13 +6,16 @@ import os
 
 DEEPEON_NAME = "11.09.2022_10.05.53"
 TIMESTEPS = 5800000
+current_dir = os.path.dirname(os.path.abspath(__file__))
 
 
 def record():
     print("saving..")
     height, width, layers = frame_array[0].shape
     out = cv2.VideoWriter(
-        f"Recordings/video_{DEEPEON_NAME}_timestep_{TIMESTEPS}.mp4",
+        os.path.join(
+            current_dir, "Recordings", f"video_{DEEPEON_NAME}_timestep_{TIMESTEPS}.mp4"
+        ),
         cv2.VideoWriter_fourcc(*"mp4v"),
         20,
         (width, height),
@@ -33,10 +36,10 @@ game_config = {
 
 
 env = CustomEnv(game_config)
-model = DQN.load(os.path.join("Models", f"{DEEPEON_NAME}", f"{TIMESTEPS}", "model"))
-
-model = DQN.load("Models/400-model")
-print("loaded")
+model = DQN.load(
+    os.path.join(current_dir, "Models", f"{DEEPEON_NAME}", f"{TIMESTEPS}", "model")
+)
+print("model loaded")
 
 env.highscore = 0
 frame_array = []

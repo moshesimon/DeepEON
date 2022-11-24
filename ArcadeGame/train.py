@@ -1,7 +1,7 @@
 from random import seed
 from stable_baselines3.dqn.policies import CnnPolicy
 from stable_baselines3.dqn.dqn import DQN
-from envs.custom_env import CustomEnv, COLUMN_COUNT, SCREEN_COLUMN_COUNT, K
+from envs.custom_env2 import CustomEnv, COLUMN_COUNT, SCREEN_COLUMN_COUNT, K
 from wandb.integration.sb3 import WandbCallback
 import wandb
 import argparse
@@ -31,21 +31,21 @@ model_config = {
     "number_of_slots": COLUMN_COUNT,  # set in custom env file
     "screen_number_of_slots": SCREEN_COLUMN_COUNT,  # set in custom env file
     "K": K,  # set in custom env file
-    "solution_reward": 100,
-    "rejection_reward": -50,
+    "solution_reward": 10,
+    "rejection_reward": -10,
     "left_reward": 0,
     "right_reward": 0,
     "seed": 0,
     "max_blocks": 1,
-    "total_timesteps": 1000000,
-    "save_every_timesteps": 500000,
-    "buffer_size": 20000,
+    "total_timesteps": 10000000,
+    "save_every_timesteps": 1000000,
+    "buffer_size": 100000,
     "batch_size": 32,
     "exploration_final_eps": 0.1,
     "exploration_fraction": 0.75,
     "gamma": 0.995,
     "learning_rate": 0.001,
-    "learning_starts": 10000,
+    "learning_starts": 100000,
     "target_update_interval": 10000,
     "train_freq": (4, "step"),
 }

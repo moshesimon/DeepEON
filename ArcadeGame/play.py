@@ -1,6 +1,7 @@
 import pygame
 from stable_baselines3.dqn.dqn import DQN
 from envs.custom_env import CustomEnv
+import os
 
 game_config = {
     "solution_reward": 10,
@@ -10,9 +11,10 @@ game_config = {
     "seed": 0,
 }
 
+current_dir = os.path.dirname(os.path.abspath(__file__))
 env = CustomEnv(game_config)
 
-model = DQN.load("Models/400-model")
+model = DQN.load(os.path.join(current_dir, "Models", "400-model"))
 print("loaded")
 
 env.game.highscore = 0

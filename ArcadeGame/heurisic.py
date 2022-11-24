@@ -3,6 +3,7 @@ from Games.game6 import ArcadeGame, K, COLUMN_COUNT
 import numpy as np
 import pandas as pd
 from datetime import datetime
+import os
 
 episode_count_targets = 100
 game_config = {
@@ -14,6 +15,7 @@ game_config = {
     "max_blocks": 1,
 }
 
+current_dir = os.path.dirname(os.path.abspath(__file__))
 game = ArcadeGame(game_config)
 episode_count = 0
 episode_rewards = []
@@ -56,4 +58,8 @@ print(mean_reward)
 index = np.arange(0, episode_count_targets)
 df = pd.DataFrame({"index": index, "Episode Rewards": np.array(episode_rewards)})
 current_date_time = datetime.now().strftime("%m.%d.%Y_%H.%M.%S")
-df.to_json(f"Evaluation data/evaluation_{K}_SP_FF_{current_date_time}.json")
+df.to_json(
+    os.path.join(
+        current_dir, "Evaluation data", f"evaluation_{K}_SP_FF_{current_date_time}.json"
+    )
+)
