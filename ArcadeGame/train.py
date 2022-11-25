@@ -8,7 +8,7 @@ import argparse
 from datetime import datetime
 import os
 import pathlib
-from config import current_dir, all_configs
+from config import current_dir, model_config
 
 
 parse = False
@@ -27,29 +27,6 @@ def setup_parser():
     parser.add_argument("--total_timesteps")
     return parser
 
-
-model_config = {
-    "number_of_slots": all_configs["number_of_slots"],
-    "screen_number_of_slots": all_configs["screen_number_of_slots"],
-    "K": all_configs["K"],
-    "solution_reward": all_configs["solution_reward"],
-    "rejection_reward": all_configs["rejection_reward"],
-    "left_reward": all_configs["left_reward"],
-    "right_reward": all_configs["right_reward"],
-    "seed": all_configs["seed"],
-    "max_blocks": all_configs["max_blocks"],
-    "total_timesteps": all_configs["total_timesteps"],
-    "save_every_timesteps": all_configs["save_every_timesteps"],
-    "buffer_size": all_configs["buffer_size"],
-    "batch_size": all_configs["batch_size"],
-    "exploration_final_eps": all_configs["exploration_final_eps"],
-    "exploration_fraction": all_configs["exploration_fraction"],
-    "gamma": all_configs["gamma"],
-    "learning_rate": all_configs["learning_rate"],
-    "learning_starts": all_configs["learning_starts"],
-    "target_update_interval": all_configs["target_update_interval"],
-    "train_freq": all_configs["train_freq"],
-}
 
 config = model_config
 
@@ -80,17 +57,16 @@ if parse:
 
     config = args_config
 
-
-current_date_time = datetime.now().strftime("%m.%d.%Y_%H.%M.%S")
+full_name = f"{model_config['number_of_slots_trained']}_{model_config['K']}_{model_config['solution_reward']}_{model_config['rejection_reward']}_{model_config['seed']}_{model_config['max_blocks']}"
+# current_date_time = datetime.now().strftime("%m.%d.%Y_%H.%M.%S")
 
 wandb.init(
     project="DeepEON",
     entity="deepeon",
-    name=f"{current_date_time}",
+    name=full_name,
     config=config,
     sync_tensorboard=True,  # auto-upload sb3's tensorboard metrics
 )
-
 
 env = CustomEnv(config)
 
@@ -98,7 +74,7 @@ model = DQN(
     CnnPolicy,
     env,
     verbose=1,
-    tensorboard_log=os.path.join("tensorboardEON", wandb.run.name),
+    tensorboard_log=os.path.join("tensorboardEON", full_name),
     learning_starts=config["learning_starts"],
     buffer_size=config["buffer_size"],
     batch_size=config["batch_size"],
@@ -110,17 +86,14 @@ model = DQN(
 )
 
 
-for i in range(1, int(config["total_timesteps"] / config["save_every_timesteps"]) + 1):
-    model.learn(
-        total_timesteps=config["save_every_timesteps"],
-        callback=WandbCallback(
-            model_save_path=os.path.join(
-                "Models", f"{wandb.run.name}", f"{config['save_every_timesteps']*i}"
-            ),
-            verbose=2,
-        ),
-        tb_log_name=f"{wandb.run.name}",
-        reset_num_timesteps=False,
-    )
+model.learn(
+    total_timesteps=config["total_timesteps"],
+    callback=WandbCallback(
+        model_save_path=os.path.join("Models", full_name),
+        verbose=2,
+    ),
+    tb_log_name=full_name,
+    reset_num_timesteps=False,
+)
 wandb.run.finish()
 env.close()

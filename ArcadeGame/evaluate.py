@@ -9,9 +9,17 @@ import matplotlib.pyplot as plt
 import pandas as pd
 import config
 from config import current_dir, all_configs
+import os
 
-DEEPEON_NAME = "11.04.2022_01.02.31"
-TIMESTEPS = 1300000
+number_of_slots_trained = 8
+K = 3
+solution_reward = 10
+rejection_reward = -10
+seed = 0
+max_blocks = 1
+number_of_slots_evaluated = 16
+
+full_name = f"{number_of_slots_evaluated}_{number_of_slots_trained}_{K}_{solution_reward}_{rejection_reward}_{seed}_{max_blocks}"
 
 
 def evaluate(
@@ -52,19 +60,19 @@ def evaluate(
 
 n_episodes = 100
 game_config = {
-    "solution_reward": all_configs["solution_reward"],
-    "rejection_reward": all_configs["rejection_reward"],
+    "solution_reward": solution_reward,
+    "rejection_reward": rejection_reward,
     "left_reward": all_configs["left_reward"],
     "right_reward": all_configs["right_reward"],
-    "seed": all_configs["seed"],
-    "max_blocks": all_configs["max_blocks"],
+    "seed": seed,
+    "max_blocks": max_blocks,
+    "K": K,
+    "number_of_slots": number_of_slots_evaluated,
 }
 
 env = CustomEnv(game_config)
 env.seed(game_config["seed"])
-model = DQN.load(
-    os.path.join(current_dir, "Models", f"{DEEPEON_NAME}", f"{TIMESTEPS}", "model")
-)
+model = DQN.load(os.path.join(current_dir, "Models", full_name))
 print("Loaded")
 model.set_env(env)
 episode_rewards, episode_lengths = evaluate(model, env, n_episodes, render=False)
@@ -80,6 +88,6 @@ df.to_json(
     os.path.join(
         current_dir,
         "Evaluations",
-        f"evaluation_{DEEPEON_NAME}_seed_{game_config['seed']}.json",
+        f"agent_evaluation_{full_name}.json",
     )
 )

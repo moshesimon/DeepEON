@@ -5,14 +5,14 @@ import networkx as nx
 import sys
 from config import all_configs
 
-COLUMN_COUNT = all_configs["number_of_slots"]
-SCREEN_COLUMN_COUNT = all_configs["screen_number_of_slots"]
-K = all_configs["K"]
+# COLUMN_COUNT = all_configs["number_of_slots"]
+# SCREEN_COLUMN_COUNT = all_configs["screen_number_of_slots"]
+# K = all_configs["K"]
 WIDTH = all_configs["width"]
 HEIGHT = all_configs["height"]
 SCREEN_WIDTH = all_configs["screen_width"]
 SCREEN_HEIGHT = all_configs["screen_height"]
-LEFT_SIDE_OFFSET = all_configs["left_side_offset"]
+LEFT_SIDE_OFFSET = all_configs["screen_side_offset"]
 PATH_ROWS = all_configs["path_rows"]
 SPECTRUM_SLOTS_ROWS_FROM_TOP = all_configs["spectrum_slots_rows_from_top"]
 WHITE = all_configs["white"]
@@ -24,6 +24,8 @@ RED = all_configs["red"]
 class ArcadeGame:
     def __init__(self, config):
         self.config = config
+        self.k = config["K"]
+        self.number_of_slots = config["number_of_slots"]
         self.window = (SCREEN_WIDTH, SCREEN_HEIGHT)
         self.background = pygame.Surface(self.window)
         self.highscore = 0
@@ -32,28 +34,32 @@ class ArcadeGame:
         self.G.add_edges_from(self.edges)
         self.gaps = []
         for i in range(K):
-            self.gaps.append(COLUMN_COUNT + (COLUMN_COUNT + 1) * i)
+            self.gaps.append(self.number_of_slots + (self.number_of_slots + 1) * i)
         self.seed()
 
     def draw_screen(self):
         self.background.fill(RED)
         for k, path in enumerate(self.paths):
             for i, row in enumerate(self.path_grid(path).values()):  # print links grid
-                for column in range(COLUMN_COUNT):
+                for column in range(self.number_of_slots):
                     if row[column] == 0:
                         self.draw_box(
-                            column + LEFT_SIDE_OFFSET + k * (COLUMN_COUNT + 1),
+                            column
+                            + LEFT_SIDE_OFFSET
+                            + self.k * (self.number_of_slots + 1),
                             PATH_ROWS - i,
                             WHITE,
                         )
                     else:
                         self.draw_box(
-                            column + LEFT_SIDE_OFFSET + k * (COLUMN_COUNT + 1),
+                            column
+                            + LEFT_SIDE_OFFSET
+                            + self.k * (self.number_of_slots + 1),
                             PATH_ROWS - i,
                             BLACK,
                         )
 
-        for column in range(COLUMN_COUNT * K + K - 1):  # print slots
+        for column in range(self.number_of_slots * self.k + self.k - 1):  # print slots
             if self.spec_grid[column] == 0:
                 self.draw_box(
                     column + LEFT_SIDE_OFFSET, SPECTRUM_SLOTS_ROWS_FROM_TOP, RED
@@ -99,7 +105,7 @@ class ArcadeGame:
         self.update_spec_grid()  # populate spectrum grid
 
     def update_spec_grid(self):
-        self.spec_grid = np.zeros(COLUMN_COUNT * K + K - 1, dtype=int)
+        self.spec_grid = np.zeros(COLUMN_COUNT * self.k + self.k - 1, dtype=int)
         try:
             for i in range(self.slots):
                 self.spec_grid[self.first_slot + i] = 1
@@ -131,9 +137,11 @@ class ArcadeGame:
         """
         if first_slot == -1:
             first_slot = self.first_slot
-        self.path_selected = first_slot // (COLUMN_COUNT + 1)
+        self.path_selected = first_slot // (self.number_of_slots + 1)
         self.ans_grid = self.path_grid(self.paths[self.path_selected])
-        self.temp_first_slot = first_slot - self.path_selected * (COLUMN_COUNT + 1)
+        self.temp_first_slot = first_slot - self.path_selected * (
+            self.number_of_slots + 1
+        )
         for row in self.ans_grid.values():  # for spectrum of each link
             for i in range(self.slots):  # for each slot
                 if (
@@ -174,13 +182,15 @@ class ArcadeGame:
 
 def main():  # only used for human mode
     done = False
-    game_config = {
+    game_config = {  # TBC
         "solution_reward": 10,
         "rejection_reward": -10,
         "left_reward": 0,
         "right_reward": 0,
         "seed": 0,
         "max_blocks": 1,
+        "K": 3,
+        "number_of_slots": 16,
     }
     game = ArcadeGame(game_config)
     game.new_game()
@@ -193,7 +203,8 @@ def main():  # only used for human mode
             if event.type == pygame.KEYDOWN:
                 if (
                     event.key == pygame.K_RIGHT
-                    and game.first_slot < COLUMN_COUNT * K + K - 1 - game.slots
+                    and game.first_slot
+                    < COLUMN_COUNT * game.k + game.k - 1 - game.slots
                 ):
                     if game.first_slot + game.slots in game.gaps:
                         game.first_slot += game.slots + 1

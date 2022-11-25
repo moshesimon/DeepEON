@@ -5,6 +5,7 @@ current_dir = os.path.dirname(os.path.abspath(__file__))
 
 temp_configs = {
     "number_of_slots": 16,
+    "number_of_slots_evaluated": 16,
     "screen_number_of_slots": 16,
     "K": 3,
     "solution_reward": 10,
@@ -14,7 +15,6 @@ temp_configs = {
     "seed": 0,
     "max_blocks": 1,
     "total_timesteps": 10000000,
-    "save_every_timesteps": 1000000,
     "buffer_size": 100000,
     "batch_size": 32,
     "exploration_final_eps": 0.1,
@@ -51,4 +51,38 @@ game_config = {
     "right_reward": all_configs["right_reward"],
     "seed": all_configs["seed"],
     "max_blocks": all_configs["max_blocks"],
+}
+
+model_config = {
+    "number_of_slots": all_configs["number_of_slots"],
+    "screen_number_of_slots": all_configs["screen_number_of_slots"],
+    "K": all_configs["K"],
+    "solution_reward": all_configs["solution_reward"],
+    "rejection_reward": all_configs["rejection_reward"],
+    "left_reward": all_configs["left_reward"],
+    "right_reward": all_configs["right_reward"],
+    "seed": all_configs["seed"],
+    "max_blocks": all_configs["max_blocks"],
+    "total_timesteps": all_configs["total_timesteps"],
+    "buffer_size": all_configs["buffer_size"],
+    "batch_size": all_configs["batch_size"],
+    "exploration_final_eps": all_configs["exploration_final_eps"],
+    "exploration_fraction": all_configs["exploration_fraction"],
+    "gamma": all_configs["gamma"],
+    "learning_rate": all_configs["learning_rate"],
+    "learning_starts": all_configs["learning_starts"],
+    "target_update_interval": all_configs["target_update_interval"],
+    "train_freq": all_configs["train_freq"],
+}
+
+heuristic_config = {
+    "solution_reward": all_configs["solution_reward"],
+    "rejection_reward": all_configs["rejection_reward"],
+    "left_reward": all_configs["left_reward"],
+    "right_reward": all_configs["right_reward"],
+    "seed": all_configs["seed"],
+    "max_blocks": all_configs["max_blocks"],
+    "number_of_slots": all_configs["number_of_slots_evaluated"],
+    "screen_number_of_slots": all_configs["screen_number_of_slots"],
+    "K": all_configs["K"],
 }

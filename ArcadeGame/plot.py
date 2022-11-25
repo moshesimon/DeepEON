@@ -9,9 +9,31 @@ from config import current_dir
 "silver-glade-5"
 "DeepEON4"
 "deepq_EON5"
-HEURISTIC_NAME = "1_SP_FF_11.15.2022_14.28.09"
-DEEPEON_NAME = "11.09.2022_10.05.53"
-SLOTS = "8"
+
+HEURISTIC_SLOTS = "8"
+HEURISTIC_K = "2"
+
+number_of_slots_trained = 8
+K = 3
+solution_reward = 10
+rejection_reward = -10
+seed = 0
+max_blocks = 1
+number_of_slots_evaluated = 16
+
+
+num_plots = input("How many plots do you want to generate? ")
+for i in num_plots:
+    is_agent_or_heuristic = input(
+        "Is this a heuristic or agent? Heursitic = 0, Agent = 1"
+    )
+
+    if is_agent_or_heuristic == 0:
+        pass
+
+
+EON_SLOTS = "32"
+
 SEED = "0"
 
 df1 = pd.read_json(
