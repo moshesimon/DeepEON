@@ -7,25 +7,25 @@ import gym
 from typing import Optional
 import matplotlib.pyplot as plt
 import pandas as pd
-import config
-from config import current_dir, all_configs
+from .config import current_dir, all_configs
 import os
 
-number_of_slots_trained = 8
-K = 3
-solution_reward = 10
-rejection_reward = -10
-seed = 0
-max_blocks = 1
-number_of_slots_evaluated = 16
+NUMBER_OF_SLOTS_EVALUATED = all_configs["number_of_slots_evaluated"]
+NUMBER_OF_EPISODES_EVALUATED = all_configs["number_of_episodes_evaluated"]
+NUMBER_OF_SLOTS_TRAINED = ["number_of_slots"]
+K = all_configs["K"]
+SOLUTION_REWARD = all_configs["solution_reward"]
+REJECTION_REWARD = all_configs["rejection_reward"]
+SEED = all_configs["seed"]
+MAX_BLOCKS = all_configs["max_blocks"]
 
-full_name = f"{number_of_slots_evaluated}_{number_of_slots_trained}_{K}_{solution_reward}_{rejection_reward}_{seed}_{max_blocks}"
+full_name = f"{NUMBER_OF_SLOTS_EVALUATED}_{NUMBER_OF_EPISODES_EVALUATED}_{NUMBER_OF_SLOTS_TRAINED}_{K}_{SOLUTION_REWARD}_{REJECTION_REWARD}_{SEED}_{MAX_BLOCKS}"
 
 
 def evaluate(
     model: "base_class.BaseAlgorithm",
     env: gym.Env,
-    n_eval_episodes: int = 100,
+    n_eval_episodes: int = NUMBER_OF_EPISODES_EVALUATED,
     deterministic: bool = False,
     render: bool = False,
 ):
@@ -58,25 +58,14 @@ def evaluate(
     return episode_rewards, episode_lengths
 
 
-n_episodes = 100
-game_config = {
-    "solution_reward": solution_reward,
-    "rejection_reward": rejection_reward,
-    "left_reward": all_configs["left_reward"],
-    "right_reward": all_configs["right_reward"],
-    "seed": seed,
-    "max_blocks": max_blocks,
-    "K": K,
-    "number_of_slots": number_of_slots_evaluated,
-}
 
-env = CustomEnv(game_config)
-env.seed(game_config["seed"])
+env = CustomEnv()
+env.seed(all_configs["seed"])
 model = DQN.load(os.path.join(current_dir, "Models", full_name))
 print("Loaded")
 model.set_env(env)
-episode_rewards, episode_lengths = evaluate(model, env, n_episodes, render=False)
-index = np.arange(0, n_episodes)
+episode_rewards, episode_lengths = evaluate(model, env, NUMBER_OF_EPISODES_EVALUATED, render=False)
+index = np.arange(0, NUMBER_OF_EPISODES_EVALUATED)
 df = pd.DataFrame(
     {
         "index": index,

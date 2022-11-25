@@ -4,12 +4,22 @@ import numpy as np
 import pandas as pd
 from datetime import current_date_time
 import os
-from config import current_dir, heuristic_config
+from config import current_dir, all_configs
 
-episode_count_targets = 100
-full_name = f"{heuristic_config['number_of_slots_evaluated']}_0_{heuristic_config['K']}_{heuristic_config['solution_reward']}_{heuristic_config['rejection_reward']}_{heuristic_config['seed']}_{heuristic_config['max_blocks']}"
+NUMBER_OF_SLOTS_EVALUATED = all_configs["number_of_slots_evaluated"]
+NUMBER_OF_EPISODES_EVALUATED = all_configs["number_of_episodes_evaluated"]
+NUMBER_OF_SLOTS_TRAINED = 0 # NOT USED
+K = all_configs["K"]
+SOLUTION_REWARD = all_configs["solution_reward"]
+REJECTION_REWARD = all_configs["rejection_reward"]
+SEED = all_configs["seed"]
+MAX_BLOCKS = all_configs["max_blocks"]
 
-game = ArcadeGame(heuristic_config)
+full_name = f"{NUMBER_OF_SLOTS_EVALUATED}_{NUMBER_OF_EPISODES_EVALUATED}_{NUMBER_OF_SLOTS_TRAINED}_{K}_{SOLUTION_REWARD}_{REJECTION_REWARD}_{SEED}_{MAX_BLOCKS}"
+
+episode_count_targets = NUMBER_OF_EPISODES_EVALUATED
+
+game = ArcadeGame()
 episode_count = 0
 episode_rewards = []
 while episode_count < episode_count_targets:

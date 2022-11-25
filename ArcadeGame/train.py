@@ -8,8 +8,16 @@ import argparse
 from datetime import datetime
 import os
 import pathlib
-from config import current_dir, model_config
+from config import current_dir, all_configs
 
+NUMBER_OF_SLOTS_TRAINED = all_configs["number_of_slots"]
+K = all_configs["K"]
+SOLUTION_REWARD = all_configs["solution_reward"]
+REJECTION_REWARD = all_configs["rejection_reward"]
+SEED = all_configs["seed"]
+MAX_BLOCKS = all_configs["max_blocks"]
+
+full_name = f"{NUMBER_OF_SLOTS_TRAINED}_{K}_{SOLUTION_REWARD}_{REJECTION_REWARD}_{SEED}_{MAX_BLOCKS}"
 
 parse = False
 # Build your ArgumentParser however you like
@@ -27,8 +35,7 @@ def setup_parser():
     parser.add_argument("--total_timesteps")
     return parser
 
-
-config = model_config
+config = all_configs
 
 if parse:
     parser = setup_parser()
@@ -37,12 +44,15 @@ if parse:
     args = parser.parse_args()
 
     args_config = {
-        "solution_reward": model_config.get("solution_reward"),
-        "rejection_reward": model_config.get("rejection_reward"),
-        "left_reward": model_config.get("left_reward"),
-        "right_reward": model_config.get("right_reward"),
-        "seed": model_config.get("seed"),
-        "max_blocks": model_config.get("max_blocks"),
+        "number_of_slots": all_configs.get("number_of_slots"),
+        "screen_number_of_slots": all_configs.get("screen_number_of_slots"),
+        "solution_reward": all_configs.get("solution_reward"),
+        "rejection_reward": all_configs.get("rejection_reward"),
+        "left_reward": all_configs.get("left_reward"),
+        "right_reward": all_configs.get("right_reward"),
+        "seed": all_configs.get("seed"),
+        "max_blocks": all_configs.get("max_blocks"),
+        "K": all_configs.get("K"),
         "buffer_size": int(args.buffer_size),
         "batch_size": int(args.batch_size),
         "exploration_final_eps": float(args.exploration_final_eps),
@@ -57,9 +67,6 @@ if parse:
 
     config = args_config
 
-full_name = f"{model_config['number_of_slots_trained']}_{model_config['K']}_{model_config['solution_reward']}_{model_config['rejection_reward']}_{model_config['seed']}_{model_config['max_blocks']}"
-# current_date_time = datetime.now().strftime("%m.%d.%Y_%H.%M.%S")
-
 wandb.init(
     project="DeepEON",
     entity="deepeon",
@@ -68,13 +75,14 @@ wandb.init(
     sync_tensorboard=True,  # auto-upload sb3's tensorboard metrics
 )
 
-env = CustomEnv(config)
+
+env = CustomEnv()
 
 model = DQN(
     CnnPolicy,
     env,
     verbose=1,
-    tensorboard_log=os.path.join("tensorboardEON", full_name),
+    tensorboard_log=os.path.join("tensorboardEON", wandb.run.name),
     learning_starts=config["learning_starts"],
     buffer_size=config["buffer_size"],
     batch_size=config["batch_size"],
@@ -86,14 +94,17 @@ model = DQN(
 )
 
 
-model.learn(
-    total_timesteps=config["total_timesteps"],
-    callback=WandbCallback(
-        model_save_path=os.path.join("Models", full_name),
-        verbose=2,
-    ),
-    tb_log_name=full_name,
-    reset_num_timesteps=False,
-)
+for i in range(1, int(config["total_timesteps"] / config["save_every_timesteps"]) + 1):
+    model.learn(
+        total_timesteps=config["save_every_timesteps"],
+        callback=WandbCallback(
+            model_save_path=os.path.join(
+              "Models", full_name
+            ),
+            verbose=2,
+        ),
+        tb_log_name=full_name,
+        reset_num_timesteps=False,
+    )
 wandb.run.finish()
 env.close()
