@@ -23,17 +23,17 @@ from torch import layout
 #         larger.append(r2[i]-r1[i])
 # print(len(larger), larger)
 fig, ax = plt.subplots()
-KSP = [32.3,30.9,34.6,33.7,36.0]
-DEEP = [29.5,32.1,31.3,31.5,28.4]
+KSP = [32.3, 30.9, 34.6, 33.7, 36.0]
+DEEP = [29.5, 32.1, 31.3, 31.5, 28.4]
 plt.title("DeepEON vs KSP-FF")
 plt.xlabel("Seed ")
 plt.ylabel("Avarage Score")
 from matplotlib.ticker import MaxNLocator
 
-seed = [0,1,2,3,4]
+seed = [0, 1, 2, 3, 4]
 
-ax.scatter(seed,DEEP,label ="DeepEON")
-ax.scatter(seed,KSP,label = "KSP-FF")
+ax.scatter(seed, DEEP, label="DeepEON")
+ax.scatter(seed, KSP, label="KSP-FF")
 ax.xaxis.set_major_locator(MaxNLocator(integer=True))
 plt.legend()
 

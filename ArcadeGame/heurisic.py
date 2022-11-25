@@ -2,18 +2,12 @@ from datetime import datetime
 from Games.game6 import ArcadeGame, K, COLUMN_COUNT
 import numpy as np
 import pandas as pd
-from datetime import datetime
+from datetime import current_date_time
+import os
+from config import current_dir, game_config
 
 episode_count_targets = 100
-game_config = {
-  "solution_reward": 10,
-  "rejection_reward": -10,
-  "left_reward": 0,
-  "right_reward": 0,
-  "seed": 0,
-  "max_blocks": 1,
-}
- 
+
 game = ArcadeGame(game_config)
 episode_count = 0
 episode_rewards = []
@@ -26,8 +20,10 @@ while episode_count < episode_count_targets:
     while not done:
         solution = False
         for k in range(K):
-            for i in range(COLUMN_COUNT-game.slots+1): #[0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15]
-                first_slot = k*(COLUMN_COUNT+1) + i
+            for i in range(
+                COLUMN_COUNT - game.slots + 1
+            ):  # [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15]
+                first_slot = k * (COLUMN_COUNT + 1) + i
                 if game.is_solution(first_slot=first_slot):
                     solution = True
                     game.first_slot = first_slot
@@ -38,21 +34,24 @@ while episode_count < episode_count_targets:
             game.first_slot = 0
         game.update_spec_grid()
         game.draw_screen()
-        #game.render()
+        # game.render()
         reward, done = game.check_solution()
         episode_reward += reward
-        #print(episode_reward)
-    
+        # print(episode_reward)
+
     episode_rewards.append(episode_reward)
     episode_count += 1
     print(episode_count)
-    
-    
+
+
 mean_reward = np.mean(episode_rewards)
 std_reward = np.std(episode_rewards)
 print(mean_reward)
-index = np.arange(0,episode_count_targets)
-df = pd.DataFrame({"index":index,"Episode Rewards":np.array(episode_rewards)})
+index = np.arange(0, episode_count_targets)
+df = pd.DataFrame({"index": index, "Episode Rewards": np.array(episode_rewards)})
 current_date_time = datetime.now().strftime("%m.%d.%Y_%H.%M.%S")
-df.to_json(f"Evaluation data/evaluation_{K}_SP_FF_{current_date_time}.json")
-    
+df.to_json(
+    os.path.join(
+        current_dir, "Evaluation data", f"evaluation_{K}_SP_FF_{current_date_time}.json"
+    )
+)
