@@ -101,17 +101,16 @@ model = DQN(
 )
 
 
-for i in range(1, int(config["total_timesteps"] / config["save_every_timesteps"]) + 1):
-    model.learn(
-        total_timesteps=config["save_every_timesteps"],
-        callback=WandbCallback(
-            model_save_path=os.path.join(
-              current_dir, "Models", full_name
-            ),
-            verbose=2,
+model.learn(
+    total_timesteps=config["total_timesteps"],
+    callback=WandbCallback(
+        model_save_path=os.path.join(
+            current_dir, "Models", full_name
         ),
-        tb_log_name=full_name,
-        reset_num_timesteps=False,
-    )
+        verbose=2,
+    ),
+    tb_log_name=full_name,
+    reset_num_timesteps=True,
+)
 wandb.run.finish()
 env.close()
