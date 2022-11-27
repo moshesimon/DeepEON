@@ -1,7 +1,8 @@
 from random import seed
 from stable_baselines3.dqn.policies import CnnPolicy
 from stable_baselines3.dqn.dqn import DQN
-from envs.custom_env2 import CustomEnv, COLUMN_COUNT, SCREEN_COLUMN_COUNT, K
+from envs.custom_env import CustomEnv
+from envs.custom_env2 import CustomEnv as CustomEnv2
 from wandb.integration.sb3 import WandbCallback
 import wandb
 import argparse
@@ -15,9 +16,10 @@ K = all_configs["K"]
 SOLUTION_REWARD = all_configs["solution_reward"]
 REJECTION_REWARD = all_configs["rejection_reward"]
 SEED = all_configs["seed"]
-MAX_BLOCKS = all_configs["max_blocks"]
+END_LIMIT = all_configs["end_limit"]
+ENV = all_configs["env"]
 
-full_name = f"{NUMBER_OF_SLOTS_TRAINED}_{K}_{SOLUTION_REWARD}_{REJECTION_REWARD}_{SEED}_{MAX_BLOCKS}"
+full_name = f"{NUMBER_OF_SLOTS_TRAINED}_{K}_{SOLUTION_REWARD}_{REJECTION_REWARD}_{SEED}_{END_LIMIT}_{ENV}"
 
 parse = False
 # Build your ArgumentParser however you like
@@ -75,8 +77,13 @@ wandb.init(
     sync_tensorboard=True,  # auto-upload sb3's tensorboard metrics
 )
 
-
-env = CustomEnv()
+if ENV == "1":
+    env = CustomEnv()
+elif ENV == "2":
+    env = CustomEnv2()
+else:
+    print("env not selected")
+    exit(1)
 
 model = DQN(
     CnnPolicy,
@@ -99,7 +106,7 @@ for i in range(1, int(config["total_timesteps"] / config["save_every_timesteps"]
         total_timesteps=config["save_every_timesteps"],
         callback=WandbCallback(
             model_save_path=os.path.join(
-              "Models", full_name
+              current_dir, "Models", full_name
             ),
             verbose=2,
         ),

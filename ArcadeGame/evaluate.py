@@ -18,8 +18,9 @@ SOLUTION_REWARD = all_configs["solution_reward"]
 REJECTION_REWARD = all_configs["rejection_reward"]
 SEED = all_configs["seed"]
 MAX_BLOCKS = all_configs["max_blocks"]
+ENV = all_configs["env"]
 
-full_name = f"{NUMBER_OF_SLOTS_EVALUATED}_{NUMBER_OF_EPISODES_EVALUATED}_{NUMBER_OF_SLOTS_TRAINED}_{K}_{SOLUTION_REWARD}_{REJECTION_REWARD}_{SEED}_{MAX_BLOCKS}"
+full_name = f"{NUMBER_OF_SLOTS_EVALUATED}_{NUMBER_OF_EPISODES_EVALUATED}_{NUMBER_OF_SLOTS_TRAINED}_{K}_{SOLUTION_REWARD}_{REJECTION_REWARD}_{SEED}_{MAX_BLOCKS}_{ENV}"
 
 
 def evaluate(

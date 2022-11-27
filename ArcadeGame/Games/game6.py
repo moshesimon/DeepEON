@@ -4,7 +4,8 @@ import numpy as np
 import networkx as nx
 import sys
 import os
-from ..config import all_configs
+#from  import config 
+from ArcadeGame.config import all_configs
 
 COLUMN_COUNT = all_configs["number_of_slots"]
 SCREEN_COLUMN_COUNT = all_configs["screen_number_of_slots"]
@@ -25,7 +26,7 @@ REJECTION_REWARD = all_configs["rejection_reward"]
 LEFT_REWARD = all_configs["left_reward"]
 RIGHT_REWARD = all_configs["right_reward"]
 SEED = all_configs["seed"]
-MAX_BLOCKS = all_configs["max_blocks"]
+END_LIMIT = all_configs["end_limit"]
 
 
 class ArcadeGame:
@@ -50,7 +51,7 @@ class ArcadeGame:
                         self.draw_box(
                             column
                             + LEFT_SIDE_OFFSET
-                            + K * (COLUMN_COUNT + 1),
+                            + k * (COLUMN_COUNT + 1),
                             PATH_ROWS - i,
                             WHITE,
                         )
@@ -58,7 +59,7 @@ class ArcadeGame:
                         self.draw_box(
                             column
                             + LEFT_SIDE_OFFSET
-                            + K * (COLUMN_COUNT + 1),
+                            + k * (COLUMN_COUNT + 1),
                             PATH_ROWS - i,
                             BLACK,
                         )
@@ -129,7 +130,7 @@ class ArcadeGame:
             reward = REJECTION_REWARD
             self.blocks += 1
             self.reward += reward
-            if self.blocks >= MAX_BLOCKS:
+            if self.blocks >= END_LIMIT:
                 if self.score > self.highscore:
                     self.highscore = self.score
                 done = True
@@ -188,6 +189,7 @@ def main():  # only used for human mode
     done = False
     game = ArcadeGame()
     game.new_game()
+    game.draw_screen()
     game.render()
     while True:
         for event in pygame.event.get():

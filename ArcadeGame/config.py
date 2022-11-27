@@ -4,6 +4,8 @@ current_dir = os.path.dirname(os.path.abspath(__file__))
 
 
 temp_configs = {
+    "env": 1,
+    "episode_end": 1,
     "number_of_slots": 16,
     "screen_number_of_slots": 16,
     "number_of_slots_evaluated": 16,
@@ -14,7 +16,7 @@ temp_configs = {
     "left_reward": 0,
     "right_reward": 0,
     "seed": 0,
-    "max_blocks": 1,
+    "end_limit": 1,
     "total_timesteps": 10000000,
     "buffer_size": 100000,
     "batch_size": 32,
@@ -40,7 +42,7 @@ temp_configs = {
 
 temp_configs["screen_width"] = (
     temp_configs["screen_number_of_slots"] * temp_configs["width"]
-    + temp_configs["K"]
+    * temp_configs["K"]
     + (temp_configs["K"] + 1) * temp_configs["width"]
 )
 

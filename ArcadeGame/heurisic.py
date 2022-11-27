@@ -9,13 +9,14 @@ from config import current_dir, all_configs
 NUMBER_OF_SLOTS_EVALUATED = all_configs["number_of_slots_evaluated"]
 NUMBER_OF_EPISODES_EVALUATED = all_configs["number_of_episodes_evaluated"]
 NUMBER_OF_SLOTS_TRAINED = 0 # NOT USED
+NUMBER_OF_SLOTS = all_configs["number_of_slots"]
 K = all_configs["K"]
 SOLUTION_REWARD = all_configs["solution_reward"]
 REJECTION_REWARD = all_configs["rejection_reward"]
 SEED = all_configs["seed"]
-MAX_BLOCKS = all_configs["max_blocks"]
+END_LIMIT = all_configs["end_limit"]
 
-full_name = f"{NUMBER_OF_SLOTS_EVALUATED}_{NUMBER_OF_EPISODES_EVALUATED}_{NUMBER_OF_SLOTS_TRAINED}_{K}_{SOLUTION_REWARD}_{REJECTION_REWARD}_{SEED}_{MAX_BLOCKS}"
+full_name = f"{NUMBER_OF_SLOTS_EVALUATED}_{NUMBER_OF_EPISODES_EVALUATED}_{NUMBER_OF_SLOTS_TRAINED}_{K}_{SOLUTION_REWARD}_{REJECTION_REWARD}_{SEED}_{END_LIMIT}"
 
 episode_count_targets = NUMBER_OF_EPISODES_EVALUATED
 
@@ -32,9 +33,9 @@ while episode_count < episode_count_targets:
         solution = False
         for k in range(K):
             for i in range(
-                COLUMN_COUNT - game.slots + 1
+                NUMBER_OF_SLOTS - game.slots + 1
             ):  # [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15]
-                first_slot = k * (COLUMN_COUNT + 1) + i
+                first_slot = k * (NUMBER_OF_SLOTS + 1) + i
                 if game.is_solution(first_slot=first_slot):
                     solution = True
                     game.first_slot = first_slot
