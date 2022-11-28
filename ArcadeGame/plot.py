@@ -3,78 +3,52 @@ import matplotlib.pyplot as plt
 import pandas as pd
 import numpy as np
 import os
-from config import current_dir
-
-"solar-microwave-1"
-"silver-glade-5"
-"DeepEON4"
-"deepq_EON5"
-HEURISTIC_NAME = "1_SP_FF_11.15.2022_14.28.09"
-DEEPEON_NAME = "11.09.2022_10.05.53"
-SLOTS = "8"
-SEED = "0"
-
-df1 = pd.read_json(
-    os.path.join(
-        current_dir, "Evaluations", f"evaluation_{HEURISTIC_NAME}_slots_{SLOTS}.json"
-    )
-)  # baseline
-df2 = pd.read_json(
-    os.path.join(
-        current_dir, "Evaluations", f"evaluation_{HEURISTIC_NAME}_slots_{SLOTS}.json"
-    )
-)  # DQL
-
-mean_reward1 = np.mean(df1["Episode Rewards"])
-std_reward1 = np.std(df1["Episode Rewards"])
-print(f"{HEURISTIC_NAME}: Mean Reward: {mean_reward1}, STD Reward: {std_reward1}")
-
-mean_reward2 = np.mean(df2["Episode Rewards"])
-std_reward2 = np.std(df2["Episode Rewards"])
-print(f"{DEEPEON_NAME}: Mean Reward: {mean_reward2}, STD Reward: {std_reward2}")
+from ArcadeGame.config import current_dir
 
 
-# df1.plot.line("index",y ="Episode Rewards")
-# df2.plot.line("index",y ="Episode Rewards")
-
-# df1.plot.line("index",y ="Episode Lengths")
-# df2.plot.line("index",y ="Episode Lengths")
+PLOT_TITLE = "DeepEON vs Heuristic"
+PLAYER_TYPE = ["agent", "heuristic"]
+LEGEND = ["DeepEON", "Heuristic"]
+NUMBER_OF_SLOTS_EVALUATED = [8, 8]
+NUMBER_OF_EPISODES_EVALUATED = [100, 100]
+NUMBER_OF_SLOTS_TRAINED = [8, 8]
+K = [3, 3]
+SOLUTION_REWARD = [10, 10]
+REJECTION_REWARD = [-10, -10]
+SEED = [0, 0]
+END_LIMIT = [1, 1]
+ENV = [1, 1]
+AVERAGE_OVER = 50
 
 fig, ax = plt.subplots()
-
-# ax.plot(df1["index"],df2["Episode Rewards"],label = "DeepEON")
-# ax.plot(df1["index"],df1["Episode Rewards"],label = "Baseline")
-
-plt.title(f"DeepEON with {SLOTS} slots vs 1_SP_FF with {SLOTS} slots")
+plt.title(PLOT_TITLE)
 plt.xlabel("Rounds")
 plt.ylabel("Score")
 
-eps = [10, 20, 30, 40, 50, 60, 70, 80, 90, 100]
+eps = []
+for x in range(NUMBER_OF_EPISODES_EVALUATED[0] // AVERAGE_OVER):
+    eps.append(x * AVERAGE_OVER + AVERAGE_OVER)
 
-a = 0
-av_rew1 = []
-for i, er in enumerate(df1["Episode Rewards"]):
-    a += er
-    if (i + 1) % 10 == 0:
-        av = a / 10
-        av_rew1.append(av)
-        a = 0
-a = 0
-av_rew2 = []
-for i, er in enumerate(df2["Episode Rewards"]):
-    a += er
-    if (i + 1) % 10 == 0:
-        av = a / 10
-        av_rew2.append(av)
-        a = 0
-
-# ax.plot(eps,av_rew2,label = DEEPEON_NAME)
-# ax.plot(eps,av_rew1,label = HEURISTIC_NAME)
-
-
-ax.plot(df1["index"], df2["Episode Rewards"], label="DEEPEON")
-ax.plot(df1["index"], df1["Episode Rewards"], label="HEURISTIC")
-
-plt.legend()
+for i in range(len(PLAYER_TYPE)):
+    df = pd.read_json(
+        os.path.join(
+            current_dir,
+            "Evaluations",
+            f"{PLAYER_TYPE[i]}_evaluation_{NUMBER_OF_SLOTS_EVALUATED[i]}_{NUMBER_OF_EPISODES_EVALUATED[i]}_{NUMBER_OF_SLOTS_TRAINED[i]}_{K[i]}_{SOLUTION_REWARD[i]}_{REJECTION_REWARD[i]}_{SEED[i]}_{END_LIMIT[i]}_{ENV[i]}.json",
+        )
+    )
+    mean_reward = np.mean(df["Episode Rewards"])
+    std_reward = np.std(df["Episode Rewards"])
+    print(f"{LEGEND[i]}: Mean Reward: {mean_reward}, STD Reward: {std_reward}")
+    a = 0
+    av_rew = []
+    for j, er in enumerate(df["Episode Rewards"]):
+        a += er
+        if (j + 1) % AVERAGE_OVER == 0:
+            av = a / AVERAGE_OVER
+            av_rew.append(av)
+            a = 0
+    ax.plot(eps, av_rew, label=LEGEND[i])
+    plt.legend()
 
 plt.show()

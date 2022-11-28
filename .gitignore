@@ -129,9 +129,10 @@ dmypy.json
 .pyre/
 
 Models
-Evaluation data
+Evaluations
 tensorboardEON
 wandb
 Recordings
 Figures
 videos
+ArcadeGame/Evaluations

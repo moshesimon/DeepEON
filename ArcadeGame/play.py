@@ -1,8 +1,8 @@
 import pygame
 from stable_baselines3.dqn.dqn import DQN
-from envs.custom_env import CustomEnv
+from ArcadeGame.envs.custom_env import CustomEnv
 import os
-from config import current_dir, game_config
+from ArcadeGame.config import current_dir, game_config
 
 env = CustomEnv(game_config)
 

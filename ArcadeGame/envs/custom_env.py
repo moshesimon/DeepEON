@@ -1,13 +1,14 @@
 from gym import Env
 from gym import spaces
 import numpy as np
-from Games.game6 import ArcadeGame
-from config import all_configs
+from ArcadeGame.Games.game6 import ArcadeGame
+from ArcadeGame.config import all_configs
+
 
 SCREEN_HEIGHT = all_configs["screen_height"]
 SCREEN_WIDTH = all_configs["screen_width"]
-COLUMN_COUNT = all_configs["column_count"]
-SCREEN_COLUMN_COUNT = all_configs["screen_column_count"]
+NUMBER_OF_SLOTS = all_configs["number_of_slots"]
+SCREEN_NUMBER_OF_SLOTS = all_configs["screen_number_of_slots"]
 K = all_configs["K"]
 
 
@@ -27,7 +28,7 @@ class CustomEnv(Env):
         reward, done, info = 0, False, {}
         if (
             action == 0
-            and self.game.first_slot < COLUMN_COUNT * K + K - 1 - self.game.slots
+            and self.game.first_slot < NUMBER_OF_SLOTS * K + K - 1 - self.game.slots
         ):  # RIGHT
             if self.game.first_slot + self.game.slots in self.game.gaps:
                 self.game.first_slot += self.game.slots + 1

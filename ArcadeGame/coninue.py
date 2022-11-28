@@ -1,6 +1,6 @@
 from stable_baselines3 import DQN
-from envs.custom_env import CustomEnv
-from config import current_dir, all_configs, game_config
+from ArcadeGame.envs.custom_env import CustomEnv
+from ArcadeGame.config import current_dir, all_configs, game_config
 
 env = CustomEnv(game_config)
 model = DQN.load("deepq_EON3")

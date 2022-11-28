@@ -1,23 +1,22 @@
 from stable_baselines3.common import base_class
 from stable_baselines3.common.evaluation import evaluate_policy
 from stable_baselines3.dqn.dqn import DQN
-from envs.custom_env import CustomEnv
+from ArcadeGame.envs.custom_env import CustomEnv
 import numpy as np
 import gym
 from typing import Optional
 import matplotlib.pyplot as plt
 import pandas as pd
-import config
-from config import current_dir, all_configs
+from ArcadeGame.config import current_dir, all_configs, full_name
+import os
 
-DEEPEON_NAME = "11.04.2022_01.02.31"
-TIMESTEPS = 1300000
+NUMBER_OF_EPISODES_EVALUATED = all_configs["number_of_episodes_evaluated"]
 
 
 def evaluate(
     model: "base_class.BaseAlgorithm",
     env: gym.Env,
-    n_eval_episodes: int = 100,
+    n_eval_episodes: int = NUMBER_OF_EPISODES_EVALUATED,
     deterministic: bool = False,
     render: bool = False,
 ):
@@ -50,25 +49,15 @@ def evaluate(
     return episode_rewards, episode_lengths
 
 
-n_episodes = 100
-game_config = {
-    "solution_reward": all_configs["solution_reward"],
-    "rejection_reward": all_configs["rejection_reward"],
-    "left_reward": all_configs["left_reward"],
-    "right_reward": all_configs["right_reward"],
-    "seed": all_configs["seed"],
-    "max_blocks": all_configs["max_blocks"],
-}
-
-env = CustomEnv(game_config)
-env.seed(game_config["seed"])
-model = DQN.load(
-    os.path.join(current_dir, "Models", f"{DEEPEON_NAME}", f"{TIMESTEPS}", "model")
-)
+env = CustomEnv()
+env.seed(all_configs["seed"])
+model = DQN.load(os.path.join(current_dir, "Models", full_name))
 print("Loaded")
 model.set_env(env)
-episode_rewards, episode_lengths = evaluate(model, env, n_episodes, render=False)
-index = np.arange(0, n_episodes)
+episode_rewards, episode_lengths = evaluate(
+    model, env, NUMBER_OF_EPISODES_EVALUATED, render=False
+)
+index = np.arange(0, NUMBER_OF_EPISODES_EVALUATED)
 df = pd.DataFrame(
     {
         "index": index,
@@ -80,6 +69,6 @@ df.to_json(
     os.path.join(
         current_dir,
         "Evaluations",
-        f"evaluation_{DEEPEON_NAME}_seed_{game_config['seed']}.json",
+        f"agent_evaluation_{full_name}.json",
     )
 )

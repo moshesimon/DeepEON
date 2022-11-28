@@ -1,14 +1,18 @@
 from datetime import datetime
-from Games.game6 import ArcadeGame, K, COLUMN_COUNT
+from Games.game6 import ArcadeGame
 import numpy as np
 import pandas as pd
 from datetime import current_date_time
 import os
-from config import current_dir, game_config
+from ArcadeGame.config import current_dir, all_configs, full_name
 
-episode_count_targets = 100
 
-game = ArcadeGame(game_config)
+NUMBER_OF_SLOTS = all_configs["number_of_slots_trained"]
+K = all_configs["K"]
+
+episode_count_targets = all_configs["number_of_episodes_evaluated"]
+
+game = ArcadeGame()
 episode_count = 0
 episode_rewards = []
 while episode_count < episode_count_targets:
@@ -21,9 +25,9 @@ while episode_count < episode_count_targets:
         solution = False
         for k in range(K):
             for i in range(
-                COLUMN_COUNT - game.slots + 1
+                NUMBER_OF_SLOTS - game.slots + 1
             ):  # [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15]
-                first_slot = k * (COLUMN_COUNT + 1) + i
+                first_slot = k * (NUMBER_OF_SLOTS + 1) + i
                 if game.is_solution(first_slot=first_slot):
                     solution = True
                     game.first_slot = first_slot
@@ -49,9 +53,6 @@ std_reward = np.std(episode_rewards)
 print(mean_reward)
 index = np.arange(0, episode_count_targets)
 df = pd.DataFrame({"index": index, "Episode Rewards": np.array(episode_rewards)})
-current_date_time = datetime.now().strftime("%m.%d.%Y_%H.%M.%S")
 df.to_json(
-    os.path.join(
-        current_dir, "Evaluation data", f"evaluation_{K}_SP_FF_{current_date_time}.json"
-    )
+    os.path.join(current_dir, "Evaluations", f"heurisrtic_evaluation_{full_name}.json")
 )
