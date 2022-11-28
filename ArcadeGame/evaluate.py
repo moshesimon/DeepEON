@@ -1,13 +1,13 @@
 from stable_baselines3.common import base_class
 from stable_baselines3.common.evaluation import evaluate_policy
 from stable_baselines3.dqn.dqn import DQN
-from envs.custom_env import CustomEnv
+from ArcadeGame.envs.custom_env import CustomEnv
 import numpy as np
 import gym
 from typing import Optional
 import matplotlib.pyplot as plt
 import pandas as pd
-from .config import current_dir, all_configs, full_name
+from ArcadeGame.config import current_dir, all_configs, full_name
 import os
 
 NUMBER_OF_EPISODES_EVALUATED = all_configs["number_of_episodes_evaluated"]

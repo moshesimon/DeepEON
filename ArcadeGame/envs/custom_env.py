@@ -1,8 +1,9 @@
 from gym import Env
 from gym import spaces
 import numpy as np
-from Games.game6 import ArcadeGame
-from config import all_configs
+from ArcadeGame.Games.game6 import ArcadeGame
+from ArcadeGame.config import all_configs
+
 
 SCREEN_HEIGHT = all_configs["screen_height"]
 SCREEN_WIDTH = all_configs["screen_width"]

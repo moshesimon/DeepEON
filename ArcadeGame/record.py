@@ -1,9 +1,9 @@
 import pygame
 from stable_baselines3 import DQN
-from envs.custom_env import CustomEnv, SCREEN_HEIGHT, SCREEN_WIDTH
+from ArcadeGame.envs.custom_env import CustomEnv, SCREEN_HEIGHT, SCREEN_WIDTH
 import cv2
 import os
-from config import current_dir, game_config
+from ArcadeGame.config import current_dir, game_config
 
 DEEPEON_NAME = "11.09.2022_10.05.53"
 TIMESTEPS = 5800000

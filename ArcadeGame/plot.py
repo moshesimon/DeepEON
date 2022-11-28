@@ -3,7 +3,7 @@ import matplotlib.pyplot as plt
 import pandas as pd
 import numpy as np
 import os
-from config import current_dir
+from ArcadeGame.config import current_dir
 
 
 PLOT_TITLE = "DeepEON vs Heuristic"

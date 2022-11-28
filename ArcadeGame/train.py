@@ -1,24 +1,15 @@
 from random import seed
 from stable_baselines3.dqn.policies import CnnPolicy
 from stable_baselines3.dqn.dqn import DQN
-from envs.custom_env import CustomEnv
-from envs.custom_env2 import CustomEnv as CustomEnv2
+from ArcadeGame.envs.custom_env import CustomEnv as CustomEnv1
+from ArcadeGame.envs.custom_env2 import CustomEnv as CustomEnv2
 from wandb.integration.sb3 import WandbCallback
 import wandb
 import argparse
 from datetime import datetime
 import os
 import pathlib
-from config import current_dir, model_config, full_name
-
-
-if model_config["env"] == "1":
-    env = CustomEnv()
-elif model_config["env"] == "2":
-    env = CustomEnv2()
-else:
-    print("env not selected correctly in config.py")
-    exit(1)
+from ArcadeGame.config import current_dir, model_config, full_name
 
 
 parse = False
@@ -39,6 +30,14 @@ def setup_parser():
 
 
 config = model_config
+
+if model_config["env"] == 1:
+    env = CustomEnv1(config)
+elif model_config["env"] == 2:
+    env = CustomEnv2(config)
+else:
+    print("env not selected correctly in config.py")
+    exit(1)
 
 if parse:
     parser = setup_parser()

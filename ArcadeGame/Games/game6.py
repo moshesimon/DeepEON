@@ -30,7 +30,8 @@ END_LIMIT = all_configs["end_limit"]
 
 
 class ArcadeGame:
-    def __init__(self):
+    def __init__(self, config):
+        self.config = config
         self.window = (SCREEN_WIDTH, SCREEN_HEIGHT)
         self.background = pygame.Surface(self.window)
         self.highscore = 0

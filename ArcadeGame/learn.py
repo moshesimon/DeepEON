@@ -1,13 +1,13 @@
 from random import seed
 from stable_baselines3.dqn import CnnPolicy
 from stable_baselines3 import DQN
-from envs.custom_env2 import CustomEnv
+from ArcadeGame.envs.custom_env2 import CustomEnv
 from wandb.integration.sb3 import WandbCallback
 import wandb
 import argparse
 from datetime import datetime
 import os
-from config import current_dir, game_config
+from ArcadeGame.config import current_dir, game_config
 
 current_date_time = datetime.now().strftime("%m.%d.%Y_%H.%M.%S")
 
