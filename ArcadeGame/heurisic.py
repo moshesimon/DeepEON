@@ -4,21 +4,13 @@ import numpy as np
 import pandas as pd
 from datetime import current_date_time
 import os
-from config import current_dir, all_configs
+from config import current_dir, all_configs, full_name
 
-NUMBER_OF_SLOTS_EVALUATED = all_configs["number_of_slots_evaluated"]
-NUMBER_OF_EPISODES_EVALUATED = all_configs["number_of_episodes_evaluated"]
-NUMBER_OF_SLOTS_TRAINED = 0 # NOT USED
-NUMBER_OF_SLOTS = all_configs["number_of_slots"]
+
+NUMBER_OF_SLOTS = all_configs["number_of_slots_trained"]
 K = all_configs["K"]
-SOLUTION_REWARD = all_configs["solution_reward"]
-REJECTION_REWARD = all_configs["rejection_reward"]
-SEED = all_configs["seed"]
-END_LIMIT = all_configs["end_limit"]
 
-full_name = f"{NUMBER_OF_SLOTS_EVALUATED}_{NUMBER_OF_EPISODES_EVALUATED}_{NUMBER_OF_SLOTS_TRAINED}_{K}_{SOLUTION_REWARD}_{REJECTION_REWARD}_{SEED}_{END_LIMIT}"
-
-episode_count_targets = NUMBER_OF_EPISODES_EVALUATED
+episode_count_targets = all_configs["number_of_episodes_evaluated"]
 
 game = ArcadeGame()
 episode_count = 0

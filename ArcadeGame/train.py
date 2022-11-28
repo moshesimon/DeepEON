@@ -9,17 +9,17 @@ import argparse
 from datetime import datetime
 import os
 import pathlib
-from config import current_dir, all_configs
+from config import current_dir, model_config, full_name
 
-NUMBER_OF_SLOTS_TRAINED = all_configs["number_of_slots"]
-K = all_configs["K"]
-SOLUTION_REWARD = all_configs["solution_reward"]
-REJECTION_REWARD = all_configs["rejection_reward"]
-SEED = all_configs["seed"]
-END_LIMIT = all_configs["end_limit"]
-ENV = all_configs["env"]
 
-full_name = f"{NUMBER_OF_SLOTS_TRAINED}_{K}_{SOLUTION_REWARD}_{REJECTION_REWARD}_{SEED}_{END_LIMIT}_{ENV}"
+if model_config["env"] == "1":
+    env = CustomEnv()
+elif model_config["env"] == "2":
+    env = CustomEnv2()
+else:
+    print("env not selected correctly in config.py")
+    exit(1)
+
 
 parse = False
 # Build your ArgumentParser however you like
@@ -37,7 +37,8 @@ def setup_parser():
     parser.add_argument("--total_timesteps")
     return parser
 
-config = all_configs
+
+config = model_config
 
 if parse:
     parser = setup_parser()
@@ -46,15 +47,15 @@ if parse:
     args = parser.parse_args()
 
     args_config = {
-        "number_of_slots": all_configs.get("number_of_slots"),
-        "screen_number_of_slots": all_configs.get("screen_number_of_slots"),
-        "solution_reward": all_configs.get("solution_reward"),
-        "rejection_reward": all_configs.get("rejection_reward"),
-        "left_reward": all_configs.get("left_reward"),
-        "right_reward": all_configs.get("right_reward"),
-        "seed": all_configs.get("seed"),
-        "max_blocks": all_configs.get("max_blocks"),
-        "K": all_configs.get("K"),
+        "number_of_slots": config.get("number_of_slots"),
+        "screen_number_of_slots": config.get("screen_number_of_slots"),
+        "solution_reward": config.get("solution_reward"),
+        "rejection_reward": config.get("rejection_reward"),
+        "left_reward": config.get("left_reward"),
+        "right_reward": config.get("right_reward"),
+        "seed": config.get("seed"),
+        "end_limit": config.get("end_limit"),
+        "K": config.get("K"),
         "buffer_size": int(args.buffer_size),
         "batch_size": int(args.batch_size),
         "exploration_final_eps": float(args.exploration_final_eps),
@@ -77,14 +78,6 @@ wandb.init(
     sync_tensorboard=True,  # auto-upload sb3's tensorboard metrics
 )
 
-if ENV == "1":
-    env = CustomEnv()
-elif ENV == "2":
-    env = CustomEnv2()
-else:
-    print("env not selected")
-    exit(1)
-
 model = DQN(
     CnnPolicy,
     env,
@@ -101,17 +94,14 @@ model = DQN(
 )
 
 
-for i in range(1, int(config["total_timesteps"] / config["save_every_timesteps"]) + 1):
-    model.learn(
-        total_timesteps=config["save_every_timesteps"],
-        callback=WandbCallback(
-            model_save_path=os.path.join(
-              current_dir, "Models", full_name
-            ),
-            verbose=2,
-        ),
-        tb_log_name=full_name,
-        reset_num_timesteps=False,
-    )
+model.learn(
+    total_timesteps=config["total_timesteps"],
+    callback=WandbCallback(
+        model_save_path=os.path.join(current_dir, "Models", full_name),
+        verbose=2,
+    ),
+    tb_log_name=full_name,
+    reset_num_timesteps=False,
+)
 wandb.run.finish()
 env.close()

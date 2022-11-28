@@ -5,10 +5,6 @@ import numpy as np
 import os
 from config import current_dir
 
-"solar-microwave-1"
-"silver-glade-5"
-"DeepEON4"
-"deepq_EON5"
 
 PLOT_TITLE = "DeepEON vs Heuristic"
 PLAYER_TYPE = ["agent", "heuristic"]
@@ -18,7 +14,7 @@ NUMBER_OF_EPISODES_EVALUATED = [100, 100]
 NUMBER_OF_SLOTS_TRAINED = [8, 8]
 K = [3, 3]
 SOLUTION_REWARD = [10, 10]
-REJECTION_REWARD = [-10, -10] 
+REJECTION_REWARD = [-10, -10]
 SEED = [0, 0]
 END_LIMIT = [1, 1]
 ENV = [1, 1]
@@ -29,9 +25,9 @@ plt.title(PLOT_TITLE)
 plt.xlabel("Rounds")
 plt.ylabel("Score")
 
-eps= []
-for x in range(NUMBER_OF_EPISODES_EVALUATED[0]//AVERAGE_OVER):
-    eps.append(x*AVERAGE_OVER + AVERAGE_OVER)
+eps = []
+for x in range(NUMBER_OF_EPISODES_EVALUATED[0] // AVERAGE_OVER):
+    eps.append(x * AVERAGE_OVER + AVERAGE_OVER)
 
 for i in range(len(PLAYER_TYPE)):
     df = pd.read_json(
