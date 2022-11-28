@@ -72,3 +72,12 @@ model_config = {
     "target_update_interval": all_configs["target_update_interval"],
     "train_freq": all_configs["train_freq"],
 }
+
+game_config = {
+    "K": all_configs["K"],
+    "solution_reward": all_configs["solution_reward"],
+    "rejection_reward": all_configs["rejection_reward"],
+    "left_reward": all_configs["left_reward"],
+    "right_reward": all_configs["right_reward"],
+    "seed": all_configs["seed"],
+}

@@ -4,7 +4,7 @@ import numpy as np
 import networkx as nx
 import sys
 import os
-from ArcadeGame.config import all_configs
+from ArcadeGame.config import all_configs, game_config
 
 
 NUMBER_OF_SLOTS = all_configs["number_of_slots"]
@@ -182,7 +182,7 @@ class ArcadeGame:
 
 def main():  # only used for human mode
     done = False
-    game = ArcadeGame()
+    game = ArcadeGame(game_config)
     game.new_game()
     game.draw_screen()
     game.render()
