@@ -4,7 +4,7 @@ import numpy as np
 import pandas as pd
 from datetime import current_date_time
 import os
-from config import current_dir, all_configs
+from config import current_dir, all_configs, full_name
 
 NUMBER_OF_SLOTS_EVALUATED = all_configs["number_of_slots_evaluated"]
 NUMBER_OF_EPISODES_EVALUATED = all_configs["number_of_episodes_evaluated"]

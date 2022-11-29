@@ -15,9 +15,8 @@ class CustomEnv(Env):
     metadata = {"render.modes": ["human", "rgb_array"]}
     num_envs = 1
 
-    def __init__(self, config):
-        self.config = config
-        self.game = ArcadeGame(self.config)
+    def __init__(self):
+        self.game = ArcadeGame()
         self.action_space = spaces.Discrete(3)
         self.observation_space = spaces.Box(
             shape=(SCREEN_WIDTH, SCREEN_HEIGHT, 3), low=0, high=255, dtype=np.uint8

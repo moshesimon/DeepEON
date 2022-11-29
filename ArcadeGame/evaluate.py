@@ -7,21 +7,10 @@ import gym
 from typing import Optional
 import matplotlib.pyplot as plt
 import pandas as pd
-from .config import current_dir, all_configs
+from config import current_dir, all_configs, full_name
 import os
 
-NUMBER_OF_SLOTS_EVALUATED = all_configs["number_of_slots_evaluated"]
 NUMBER_OF_EPISODES_EVALUATED = all_configs["number_of_episodes_evaluated"]
-NUMBER_OF_SLOTS_TRAINED = ["number_of_slots"]
-K = all_configs["K"]
-SOLUTION_REWARD = all_configs["solution_reward"]
-REJECTION_REWARD = all_configs["rejection_reward"]
-SEED = all_configs["seed"]
-MAX_BLOCKS = all_configs["max_blocks"]
-ENV = all_configs["env"]
-
-full_name = f"{NUMBER_OF_SLOTS_EVALUATED}_{NUMBER_OF_EPISODES_EVALUATED}_{NUMBER_OF_SLOTS_TRAINED}_{K}_{SOLUTION_REWARD}_{REJECTION_REWARD}_{SEED}_{MAX_BLOCKS}_{ENV}"
-
 
 def evaluate(
     model: "base_class.BaseAlgorithm",
