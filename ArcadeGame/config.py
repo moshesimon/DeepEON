@@ -6,9 +6,9 @@ current_dir = os.path.dirname(os.path.abspath(__file__))
 temp_configs = {
     "env": 1,
     "episode_end": 1,
-    "number_of_slots": 16,
-    "screen_number_of_slots": 16,
-    "number_of_slots_evaluated": 16,
+    "number_of_slots": 8,
+    "screen_number_of_slots": 8,
+    "number_of_slots_evaluated": 8,
     "number_of_episodes_evaluated": 1000,
     "K": 3,
     "solution_reward": 10,
@@ -71,4 +71,13 @@ model_config = {
     "learning_starts": all_configs["learning_starts"],
     "target_update_interval": all_configs["target_update_interval"],
     "train_freq": all_configs["train_freq"],
+}
+
+game_config = {
+    "K": all_configs["K"],
+    "solution_reward": all_configs["solution_reward"],
+    "rejection_reward": all_configs["rejection_reward"],
+    "left_reward": all_configs["left_reward"],
+    "right_reward": all_configs["right_reward"],
+    "seed": all_configs["seed"],
 }

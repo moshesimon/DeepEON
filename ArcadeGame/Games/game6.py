@@ -4,7 +4,7 @@ import numpy as np
 import networkx as nx
 import sys
 import os
-from ArcadeGame.config import all_configs
+from ArcadeGame.config import all_configs, game_config
 
 
 NUMBER_OF_SLOTS = all_configs["number_of_slots"]
@@ -142,13 +142,16 @@ class ArcadeGame:
         self.path_selected = first_slot // (NUMBER_OF_SLOTS + 1)
         self.ans_grid = self.path_grid(self.paths[self.path_selected])
         self.temp_first_slot = first_slot - self.path_selected * (NUMBER_OF_SLOTS + 1)
-        for row in self.ans_grid.values():  # for spectrum of each link
-            for i in range(self.slots):  # for each slot
-                if (
-                    row[self.temp_first_slot + i] != 0
-                ):  # if slot in spectrum is occupied
-                    return False
-        return True
+        try:
+            for row in self.ans_grid.values():  # for spectrum of each link
+                for i in range(self.slots):  # for each slot
+                    if (
+                        row[self.temp_first_slot + i] != 0
+                    ):  # if slot in spectrum is occupied
+                        return False
+            return True
+        except IndexError:  # one of the slots in on the gap for env 2
+            return False
 
     def path_grid(self, path):
         i = 0
@@ -182,7 +185,7 @@ class ArcadeGame:
 
 def main():  # only used for human mode
     done = False
-    game = ArcadeGame()
+    game = ArcadeGame(game_config)
     game.new_game()
     game.draw_screen()
     game.render()
@@ -201,19 +204,23 @@ def main():  # only used for human mode
                     else:
                         game.first_slot += 1
                     game.update_spec_grid()
+                    game.draw_screen()
+                    game.render()
                 elif event.key == pygame.K_LEFT and game.first_slot > 0:
                     if game.first_slot - 1 in game.gaps:
                         game.first_slot -= game.slots + 1
                     else:
                         game.first_slot -= 1
                     game.update_spec_grid()
+                    game.draw_screen()
+                    game.render()
                 elif event.key == pygame.K_RETURN:
                     reward, done = game.check_solution()
                     if done:
                         game.new_game()
-
-        game.draw_screen()
-        game.render()
+                    game.update_spec_grid()
+                    game.draw_screen()
+                    game.render()
 
 
 if __name__ == "__main__":

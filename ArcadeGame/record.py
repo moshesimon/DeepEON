@@ -3,10 +3,7 @@ from stable_baselines3 import DQN
 from ArcadeGame.envs.custom_env import CustomEnv, SCREEN_HEIGHT, SCREEN_WIDTH
 import cv2
 import os
-from ArcadeGame.config import current_dir, game_config
-
-DEEPEON_NAME = "11.09.2022_10.05.53"
-TIMESTEPS = 5800000
+from ArcadeGame.config import current_dir, game_config, full_name
 
 
 def record():
@@ -14,7 +11,7 @@ def record():
     height, width, layers = frame_array[0].shape
     out = cv2.VideoWriter(
         os.path.join(
-            current_dir, "Recordings", f"video_{DEEPEON_NAME}_timestep_{TIMESTEPS}.mp4"
+            current_dir, "Recordings", f"video_{full_name}.mp4"
         ),
         cv2.VideoWriter_fourcc(*"mp4v"),
         20,
@@ -27,7 +24,7 @@ def record():
 
 env = CustomEnv(game_config)
 model = DQN.load(
-    os.path.join(current_dir, "Models", f"{DEEPEON_NAME}", f"{TIMESTEPS}", "model")
+    os.path.join(current_dir, "Models", f"{full_name}", "model")
 )
 print("model loaded")
 
