@@ -4,7 +4,7 @@ import numpy as np
 import networkx as nx
 import sys
 import os
-#sys.path.append(os.path.dirname(os.path.abspath(__file__)))
+
 from config import all_configs
 
 
@@ -49,18 +49,12 @@ class ArcadeGame:
             for i, row in enumerate(self.path_grid(path).values()):  # print links grid
                 for column in range(NUMBER_OF_SLOTS):
                     if row[column] == 0:
-                        self.draw_box(
-                            column
-                            + LEFT_SIDE_OFFSET
-                            + k * (NUMBER_OF_SLOTS + 1),
+                        self.draw_box(column+ LEFT_SIDE_OFFSET+ k * (NUMBER_OF_SLOTS + 1),
                             PATH_ROWS - i,
                             WHITE,
                         )
                     else:
-                        self.draw_box(
-                            column
-                            + LEFT_SIDE_OFFSET
-                            + k * (NUMBER_OF_SLOTS + 1),
+                        self.draw_box(column+ LEFT_SIDE_OFFSET+ k * (NUMBER_OF_SLOTS + 1),
                             PATH_ROWS - i,
                             BLACK,
                         )
@@ -83,6 +77,9 @@ class ArcadeGame:
         pygame.display.set_caption("DeepEON Arcade")
         self.screen.blit(self.background, (0, 0))
         pygame.display.flip()
+        print(
+            f"Number of blocks: {self.blocks} Score: {self.score} Reward: {self.reward} High Score: {self.highscore}"
+        )
 
     def draw_box(self, col, row, colour):
         pygame.draw.rect(
