@@ -103,7 +103,7 @@ class ArcadeGame:
         self.source = np.random.randint(1, self.target)
         p = nx.shortest_simple_paths(self.G, self.source, self.target)
         self.paths = list(islice(p, K))
-        self.slots = np.random.randint(1, 5)
+        self.slots = np.random.randint(2, 5)
         self.update_spec_grid()  # populate spectrum grid
 
     def update_spec_grid(self):

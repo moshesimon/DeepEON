@@ -33,7 +33,7 @@ temp_configs = {
     "screen_height": 150,
     "screen_side_offset": 1,
     "path_rows": 5,
-    "spectrum_slots_rows_from_top": 5,
+    "spectrum_slots_rows_from_top": 6,
     "white": (255, 255, 255),
     "black": (0, 0, 0),
     "green": (0, 255, 0),
