@@ -4,7 +4,7 @@ import os
 current_dir = os.path.dirname(os.path.abspath(__file__))
 
 temp_configs = {
-    "env": 1,
+    "env": 2,
     "episode_end": 1,
     "number_of_slots": 8,
     "screen_number_of_slots": 8,

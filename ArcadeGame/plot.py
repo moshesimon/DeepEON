@@ -6,18 +6,18 @@ import os
 from ArcadeGame.config import current_dir
 
 
-PLOT_TITLE = "DeepEON vs Heuristic"
-PLAYER_TYPE = ["agent", "heuristic"]
-LEGEND = ["DeepEON", "Heuristic"]
+PLOT_TITLE = "env1 vs env2"
+PLAYER_TYPE = ["agent", "agent"]
+LEGEND = ["DeepEON", "DeepEON"]
 NUMBER_OF_SLOTS_EVALUATED = [8, 8]
-NUMBER_OF_EPISODES_EVALUATED = [100, 100]
+NUMBER_OF_EPISODES_EVALUATED = [1000, 1000]
 NUMBER_OF_SLOTS_TRAINED = [8, 8]
 K = [3, 3]
 SOLUTION_REWARD = [10, 10]
 REJECTION_REWARD = [-10, -10]
 SEED = [0, 0]
 END_LIMIT = [1, 1]
-ENV = [1, 1]
+ENV = [1, 2]
 AVERAGE_OVER = 50
 
 fig, ax = plt.subplots()
