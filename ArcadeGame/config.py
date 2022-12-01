@@ -5,7 +5,8 @@ current_dir = os.path.dirname(os.path.abspath(__file__))
 
 temp_configs = {
     "env": 2,
-    "episode_end": 1,
+    "episode_end": 2,
+    "end_limit": 23,
     "number_of_slots": 8,
     "screen_number_of_slots": 8,
     "number_of_slots_evaluated": 8,
@@ -52,6 +53,7 @@ full_name = f"{all_configs['number_of_slots_evaluated']}_{all_configs['number_of
 model_config = {
     "env": all_configs["env"],
     "episode_end": all_configs["episode_end"],
+    "end_limit": all_configs["end_limit"],
     "number_of_slots": all_configs["number_of_slots"],
     "screen_number_of_slots": all_configs["screen_number_of_slots"],
     "K": all_configs["K"],
@@ -60,7 +62,6 @@ model_config = {
     "left_reward": all_configs["left_reward"],
     "right_reward": all_configs["right_reward"],
     "seed": all_configs["seed"],
-    "end_limit": all_configs["end_limit"],
     "total_timesteps": all_configs["total_timesteps"],
     "buffer_size": all_configs["buffer_size"],
     "batch_size": all_configs["batch_size"],

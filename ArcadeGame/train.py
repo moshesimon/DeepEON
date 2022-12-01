@@ -31,9 +31,9 @@ def setup_parser():
 config = model_config
 
 if model_config["env"] == 1:
-    env = CustomEnv1(config)
+    env = CustomEnv1()
 elif model_config["env"] == 2:
-    env = CustomEnv2(config)
+    env = CustomEnv2()
 else:
     print("env not selected correctly in config.py")
     exit(1)
@@ -75,6 +75,14 @@ wandb.init(
     config=config,
     sync_tensorboard=True,  # auto-upload sb3's tensorboard metrics
 )
+
+if all_configs["env"] == "1":
+    env = CustomEnv1(model_config)
+elif all_configs["env"] == "2":
+    env = CustomEnv2(model_config)
+else:
+    print("env not selected correctly in config.py")
+    exit(1)
 
 model = DQN(
     CnnPolicy,

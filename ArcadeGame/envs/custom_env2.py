@@ -10,14 +10,14 @@ SCREEN_WIDTH = all_configs["screen_width"]
 NUMBER_OF_SLOTS = all_configs["number_of_slots"]
 # SCREEN_NUMBER_OF_SLOTS = all_configs["screen_number_of_slots"]
 K = all_configs["K"]
+NUMBER_OF_SLOTS = all_configs["number_of_slots"]
 
 
 class CustomEnv(Env):
     metadata = {"render.modes": ["human", "rgb_array"]}
     num_envs = 1
 
-    def __init__(self, config):
-        self.config = config
+    def __init__(self):
         self.game = ArcadeGame()
         self.action_space = spaces.Discrete(NUMBER_OF_SLOTS * K + K - 1)
         self.observation_space = spaces.Box(

@@ -6,11 +6,12 @@ import gym
 from typing import Optional
 import matplotlib.pyplot as plt
 import pandas as pd
-from config import current_dir, all_configs, full_name
+from config import current_dir, all_configs, full_name, model_config
+from envs.custom_env import CustomEnv as CustomEnv1
+from envs.custom_env2 import CustomEnv as CustomEnv2
 import os
 
 NUMBER_OF_EPISODES_EVALUATED = all_configs["number_of_episodes_evaluated"]
-
 
 def evaluate(
     model: "base_class.BaseAlgorithm",
@@ -47,7 +48,15 @@ def evaluate(
 
     return episode_rewards, episode_lengths
 
+if all_configs["env"] == "1":
+    env = CustomEnv1(model_config)
+elif all_configs["env"] == "2":
+    env = CustomEnv2(model_config)
+else:
+    print("env not selected correctly in config.py")
+    exit(1)
 
+env = CustomEnv()
 env.seed(all_configs["seed"])
 model = DQN.load(os.path.join(current_dir, "Models", full_name, "model"))
 print("Loaded")
