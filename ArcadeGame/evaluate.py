@@ -13,6 +13,7 @@ import os
 
 NUMBER_OF_EPISODES_EVALUATED = all_configs["number_of_episodes_evaluated"]
 
+
 def evaluate(
     model: "base_class.BaseAlgorithm",
     env: gym.Env,
@@ -47,6 +48,7 @@ def evaluate(
             print(episode_count)
 
     return episode_rewards, episode_lengths
+
 
 if all_configs["env"] == 1:
     env = CustomEnv1()

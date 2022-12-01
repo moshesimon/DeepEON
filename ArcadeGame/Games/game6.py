@@ -9,7 +9,7 @@ from config import all_configs
 
 
 NUMBER_OF_SLOTS = all_configs["number_of_slots"]
-#SCREEN_NUMBER_OF_SLOTS = all_configs["screen_number_of_slots"]
+# SCREEN_NUMBER_OF_SLOTS = all_configs["screen_number_of_slots"]
 K = all_configs["K"]
 WIDTH = all_configs["width"]
 HEIGHT = all_configs["height"]
@@ -51,12 +51,14 @@ class ArcadeGame:
             for i, row in enumerate(self.path_grid(path).values()):  # print links grid
                 for column in range(NUMBER_OF_SLOTS):
                     if row[column] == 0:
-                        self.draw_box(column+ LEFT_SIDE_OFFSET+ k * (NUMBER_OF_SLOTS + 1),
+                        self.draw_box(
+                            column + LEFT_SIDE_OFFSET + k * (NUMBER_OF_SLOTS + 1),
                             PATH_ROWS - i,
                             WHITE,
                         )
                     else:
-                        self.draw_box(column+ LEFT_SIDE_OFFSET+ k * (NUMBER_OF_SLOTS + 1),
+                        self.draw_box(
+                            column + LEFT_SIDE_OFFSET + k * (NUMBER_OF_SLOTS + 1),
                             PATH_ROWS - i,
                             BLACK,
                         )
@@ -79,7 +81,9 @@ class ArcadeGame:
         pygame.display.set_caption("DeepEON Arcade")
         self.screen.blit(self.background, (0, 0))
         pygame.display.flip()
-        print(f"Round: {self.rounds} Number of blocks: {self.blocks} Reward: {self.reward} High Score: {self.highscore}")
+        print(
+            f"Round: {self.rounds} Number of blocks: {self.blocks} Reward: {self.reward} High Score: {self.highscore}"
+        )
 
     def draw_box(self, col, row, colour):
         pygame.draw.rect(
@@ -127,7 +131,7 @@ class ArcadeGame:
         else:
             self.blocks += 1
             self.reward += reward
-        
+
         if EPISODE_END == 1 and self.blocks >= END_LIMIT:
             done = True
         elif EPISODE_END == 2 and self.rounds >= END_LIMIT:
@@ -135,7 +139,7 @@ class ArcadeGame:
 
         if self.score > self.highscore:
             self.highscore = self.score
-        
+
         self.new_round()
 
         return reward, done
@@ -148,9 +152,7 @@ class ArcadeGame:
             first_slot = self.first_slot
         self.path_selected = first_slot // (NUMBER_OF_SLOTS + 1)
         self.ans_grid = self.path_grid(self.paths[self.path_selected])
-        self.temp_first_slot = first_slot - self.path_selected * (
-            NUMBER_OF_SLOTS + 1
-        )
+        self.temp_first_slot = first_slot - self.path_selected * (NUMBER_OF_SLOTS + 1)
         try:
             for row in self.ans_grid.values():  # for spectrum of each link
                 for i in range(self.slots):  # for each slot
@@ -206,8 +208,7 @@ def main():  # only used for human mode
             if event.type == pygame.KEYDOWN:
                 if (
                     event.key == pygame.K_RIGHT
-                    and game.first_slot
-                    < NUMBER_OF_SLOTS * K + K - 1 - game.slots
+                    and game.first_slot < NUMBER_OF_SLOTS * K + K - 1 - game.slots
                 ):
                     if game.first_slot + game.slots in game.gaps:
                         game.first_slot += game.slots + 1
