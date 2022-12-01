@@ -9,6 +9,7 @@ SCREEN_WIDTH = all_configs["screen_width"]
 COLUMN_COUNT = all_configs["number_of_slots"]
 SCREEN_COLUMN_COUNT = all_configs["screen_number_of_slots"]
 K = all_configs["K"]
+NUMBER_OF_SLOTS = all_configs["number_of_slots"]
 
 
 class CustomEnv(Env):

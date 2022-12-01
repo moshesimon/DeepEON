@@ -28,6 +28,7 @@ LEFT_REWARD = all_configs["left_reward"]
 RIGHT_REWARD = all_configs["right_reward"]
 SEED = all_configs["seed"]
 END_LIMIT = all_configs["end_limit"]
+EPISODE_END = all_configs["episode_end"]
 
 
 class ArcadeGame:
@@ -77,9 +78,7 @@ class ArcadeGame:
         pygame.display.set_caption("DeepEON Arcade")
         self.screen.blit(self.background, (0, 0))
         pygame.display.flip()
-        print(
-            f"Number of blocks: {self.blocks} Score: {self.score} Reward: {self.reward} High Score: {self.highscore}"
-        )
+        print(f"Round: {self.rounds} Number of blocks: {self.blocks} Reward: {self.reward} High Score: {self.highscore}")
 
     def draw_box(self, col, row, colour):
         pygame.draw.rect(
@@ -90,6 +89,7 @@ class ArcadeGame:
         self.score = 0
         self.reward = 0
         self.blocks = 0
+        self.rounds = 0
         self.link_grid = {}
         for edge in self.edges:  # populate link grid
             self.link_grid[edge] = np.zeros(NUMBER_OF_SLOTS, dtype=int)
@@ -100,6 +100,7 @@ class ArcadeGame:
         Sets up all parameters for a new round
         """
         self.first_slot = 0
+        self.rounds += 1
         self.target = np.random.randint(2, 7)
         self.source = np.random.randint(1, self.target)
         p = nx.shortest_simple_paths(self.G, self.source, self.target)
@@ -121,17 +122,22 @@ class ArcadeGame:
         if self.is_solution():
             reward = SOLUTION_REWARD
             self.reward += reward
-            self.score += 10
             self.update_link_grid()
-            self.new_round()
         else:
             reward = REJECTION_REWARD
             self.blocks += 1
             self.reward += reward
-            if self.blocks >= END_LIMIT:
-                if self.score > self.highscore:
-                    self.highscore = self.score
-                done = True
+        
+        if EPISODE_END == 1 and self.blocks >= END_LIMIT:
+            done = True
+        elif EPISODE_END == 2 and self.rounds >= END_LIMIT:
+            done = True
+
+        if self.score > self.highscore:
+            self.highscore = self.score
+        
+        self.new_round()
+
         return reward, done
 
     def is_solution(self, first_slot=-1):

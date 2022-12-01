@@ -6,6 +6,7 @@ current_dir = os.path.dirname(os.path.abspath(__file__))
 temp_configs = {
     "env": 2,
     "episode_end": 1,
+    "end_limit": 10,
     "number_of_slots": 8,
     "screen_number_of_slots": 8,
     "number_of_slots_evaluated": 8,
@@ -16,7 +17,6 @@ temp_configs = {
     "left_reward": 0,
     "right_reward": 0,
     "seed": 0,
-    "end_limit": 3,
     "total_timesteps": 1000000,
     "buffer_size": 100000,
     "batch_size": 32,
