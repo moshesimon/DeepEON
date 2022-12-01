@@ -4,7 +4,7 @@ import numpy as np
 import pandas as pd
 from datetime import current_date_time
 import os
-from ArcadeGame.config import current_dir, all_configs, full_name
+from config import current_dir, all_configs, full_name
 
 
 NUMBER_OF_SLOTS = all_configs["number_of_slots_trained"]

@@ -4,7 +4,7 @@ import numpy as np
 import networkx as nx
 import sys
 import os
-from ArcadeGame.config import all_configs, game_config
+from config import all_configs, game_config
 
 
 NUMBER_OF_SLOTS = all_configs["number_of_slots"]
@@ -30,8 +30,7 @@ END_LIMIT = all_configs["end_limit"]
 
 
 class ArcadeGame:
-    def __init__(self, config):
-        self.config = config
+    def __init__(self):
         self.window = (SCREEN_WIDTH, SCREEN_HEIGHT)
         self.background = pygame.Surface(self.window)
         self.highscore = 0
@@ -185,7 +184,7 @@ class ArcadeGame:
 
 def main():  # only used for human mode
     done = False
-    game = ArcadeGame(game_config)
+    game = ArcadeGame()
     game.new_game()
     game.draw_screen()
     game.render()

@@ -81,3 +81,5 @@ game_config = {
     "right_reward": all_configs["right_reward"],
     "seed": all_configs["seed"],
 }
+
+
