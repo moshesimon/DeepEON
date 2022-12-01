@@ -4,9 +4,9 @@ from envs.custom_env2 import CustomEnv as CustomEnv2
 from config import current_dir, all_configs, game_config
 
 if model_config["env"] == 1:
-    env = CustomEnv1(model_config)
+    env = CustomEnv1()
 elif model_config["env"] == 2:
-    env = CustomEnv2(model_config)
+    env = CustomEnv2()
 else:
     print("env not selected correctly in config.py")
     exit(1)

@@ -2,14 +2,12 @@ from datetime import datetime
 from Games.game6 import ArcadeGame
 import numpy as np
 import pandas as pd
-from datetime import current_date_time
 import os
 from config import current_dir, all_configs, full_name
 
 
-NUMBER_OF_SLOTS = all_configs["number_of_slots_trained"]
+NUMBER_OF_SLOTS = all_configs["number_of_slots"]
 K = all_configs["K"]
-
 episode_count_targets = all_configs["number_of_episodes_evaluated"]
 
 game = ArcadeGame()

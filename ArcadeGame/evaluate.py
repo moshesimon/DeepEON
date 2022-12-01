@@ -48,15 +48,14 @@ def evaluate(
 
     return episode_rewards, episode_lengths
 
-if all_configs["env"] == "1":
-    env = CustomEnv1(model_config)
-elif all_configs["env"] == "2":
-    env = CustomEnv2(model_config)
+if all_configs["env"] == 1:
+    env = CustomEnv1()
+elif all_configs["env"] == 2:
+    env = CustomEnv2()
 else:
     print("env not selected correctly in config.py")
     exit(1)
 
-env = CustomEnv()
 env.seed(all_configs["seed"])
 model = DQN.load(os.path.join(current_dir, "Models", full_name, "model"))
 print("Loaded")
