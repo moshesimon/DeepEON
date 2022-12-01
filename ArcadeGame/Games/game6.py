@@ -35,7 +35,7 @@ class ArcadeGame:
     def __init__(self):
         self.window = (SCREEN_WIDTH, SCREEN_HEIGHT)
         self.background = pygame.Surface(self.window)
-        self.highscore = 0
+        self.highscore = -100
         self.edges = [(1, 2), (2, 3), (1, 4), (3, 5), (2, 5), (4, 5), (3, 6), (4, 6)]
         self.G = nx.Graph()
         self.G.add_edges_from(self.edges)
