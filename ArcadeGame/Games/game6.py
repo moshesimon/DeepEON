@@ -4,17 +4,18 @@ import numpy as np
 import networkx as nx
 import sys
 import os
-from config import all_configs, game_config
+
+from config import all_configs
 
 
 NUMBER_OF_SLOTS = all_configs["number_of_slots"]
-# SCREEN_NUMBER_OF_SLOTS = all_configs["screen_number_of_slots"]
+#SCREEN_NUMBER_OF_SLOTS = all_configs["screen_number_of_slots"]
 K = all_configs["K"]
 WIDTH = all_configs["width"]
 HEIGHT = all_configs["height"]
 SCREEN_WIDTH = all_configs["screen_width"]
 SCREEN_HEIGHT = all_configs["screen_height"]
-SCREEN_SIDE_OFFSET = all_configs["screen_side_offset"]
+LEFT_SIDE_OFFSET = all_configs["screen_side_offset"]
 PATH_ROWS = all_configs["path_rows"]
 SPECTRUM_SLOTS_ROWS_FROM_TOP = all_configs["spectrum_slots_rows_from_top"]
 WHITE = all_configs["white"]
@@ -49,14 +50,12 @@ class ArcadeGame:
             for i, row in enumerate(self.path_grid(path).values()):  # print links grid
                 for column in range(NUMBER_OF_SLOTS):
                     if row[column] == 0:
-                        self.draw_box(
-                            column + SCREEN_SIDE_OFFSET + k * (NUMBER_OF_SLOTS + 1),
+                        self.draw_box(column+ LEFT_SIDE_OFFSET+ k * (NUMBER_OF_SLOTS + 1),
                             PATH_ROWS - i,
                             WHITE,
                         )
                     else:
-                        self.draw_box(
-                            column + SCREEN_SIDE_OFFSET + k * (NUMBER_OF_SLOTS + 1),
+                        self.draw_box(column+ LEFT_SIDE_OFFSET+ k * (NUMBER_OF_SLOTS + 1),
                             PATH_ROWS - i,
                             BLACK,
                         )
@@ -64,11 +63,11 @@ class ArcadeGame:
         for column in range(NUMBER_OF_SLOTS * K + K - 1):  # print slots
             if self.spec_grid[column] == 0:
                 self.draw_box(
-                    column + SCREEN_SIDE_OFFSET, SPECTRUM_SLOTS_ROWS_FROM_TOP, RED
+                    column + LEFT_SIDE_OFFSET, SPECTRUM_SLOTS_ROWS_FROM_TOP, RED
                 )
             else:
                 self.draw_box(
-                    column + SCREEN_SIDE_OFFSET, SPECTRUM_SLOTS_ROWS_FROM_TOP, GREEN
+                    column + LEFT_SIDE_OFFSET, SPECTRUM_SLOTS_ROWS_FROM_TOP, GREEN
                 )
 
         self.surfarr = pygame.surfarray.array3d(self.background)
@@ -149,17 +148,16 @@ class ArcadeGame:
             first_slot = self.first_slot
         self.path_selected = first_slot // (NUMBER_OF_SLOTS + 1)
         self.ans_grid = self.path_grid(self.paths[self.path_selected])
-        self.temp_first_slot = first_slot - self.path_selected * (NUMBER_OF_SLOTS + 1)
-        try:
-            for row in self.ans_grid.values():  # for spectrum of each link
-                for i in range(self.slots):  # for each slot
-                    if (
-                        row[self.temp_first_slot + i] != 0
-                    ):  # if slot in spectrum is occupied
-                        return False
-            return True
-        except IndexError:  # one of the slots in on the gap for env 2
-            return False
+        self.temp_first_slot = first_slot - self.path_selected * (
+            NUMBER_OF_SLOTS + 1
+        )
+        for row in self.ans_grid.values():  # for spectrum of each link
+            for i in range(self.slots):  # for each slot
+                if (
+                    row[self.temp_first_slot + i] != 0
+                ):  # if slot in spectrum is occupied
+                    return False
+        return True
 
     def path_grid(self, path):
         i = 0
@@ -195,6 +193,7 @@ def main():  # only used for human mode
     done = False
     game = ArcadeGame()
     game.new_game()
+    game.draw_screen()
     game.render()
     while True:
         for event in pygame.event.get():
@@ -204,7 +203,8 @@ def main():  # only used for human mode
             if event.type == pygame.KEYDOWN:
                 if (
                     event.key == pygame.K_RIGHT
-                    and game.first_slot < NUMBER_OF_SLOTS * K + K - 1 - game.slots
+                    and game.first_slot
+                    < NUMBER_OF_SLOTS * K + K - 1 - game.slots
                 ):
                     if game.first_slot + game.slots in game.gaps:
                         game.first_slot += game.slots + 1
@@ -225,7 +225,6 @@ def main():  # only used for human mode
                     reward, done = game.check_solution()
                     if done:
                         game.new_game()
-                    game.update_spec_grid()
                     game.draw_screen()
                     game.render()
 

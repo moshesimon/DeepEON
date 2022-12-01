@@ -1,14 +1,14 @@
 import os
 
-
 current_dir = os.path.dirname(os.path.abspath(__file__))
+
 
 temp_configs = {
     "env": 2,
-    "episode_end": 1,
-    "end_limit": 3,
-    "number_of_slots": 8,
-    "screen_number_of_slots": 8,
+    "episode_end": 2,
+    "end_limit": 23,
+    "number_of_slots": 16,
+    "screen_number_of_slots": 16,
     "number_of_slots_evaluated": 8,
     "number_of_episodes_evaluated": 1000,
     "K": 3,
@@ -17,7 +17,6 @@ temp_configs = {
     "left_reward": 0,
     "right_reward": 0,
     "seed": 0,
-    "end_limit": 1,
     "total_timesteps": 1000000,
     "buffer_size": 100000,
     "batch_size": 32,
@@ -27,7 +26,7 @@ temp_configs = {
     "learning_rate": 0.00025,
     "learning_starts": 50000,
     "target_update_interval": 10000,
-    "train_freq": (1, "step"),
+    "train_freq": (4, "step"),
     "width": 20,
     "height": 20,
     "screen_width": 0,
@@ -42,7 +41,8 @@ temp_configs = {
 }
 
 temp_configs["screen_width"] = (
-    temp_configs["screen_number_of_slots"] * temp_configs["width"] * temp_configs["K"]
+    temp_configs["screen_number_of_slots"] * temp_configs["width"]
+    * temp_configs["K"]
     + (temp_configs["K"] + 1) * temp_configs["width"]
 )
 
@@ -53,7 +53,6 @@ full_name = f"{all_configs['number_of_slots_evaluated']}_{all_configs['number_of
 model_config = {
     "env": all_configs["env"],
     "episode_end": all_configs["episode_end"],
-    "end_limit": all_configs["end_limit"],
     "number_of_slots": all_configs["number_of_slots"],
     "screen_number_of_slots": all_configs["screen_number_of_slots"],
     "K": all_configs["K"],
@@ -62,6 +61,7 @@ model_config = {
     "left_reward": all_configs["left_reward"],
     "right_reward": all_configs["right_reward"],
     "seed": all_configs["seed"],
+    "end_limit": all_configs["end_limit"],
     "total_timesteps": all_configs["total_timesteps"],
     "buffer_size": all_configs["buffer_size"],
     "batch_size": all_configs["batch_size"],
@@ -82,5 +82,3 @@ game_config = {
     "right_reward": all_configs["right_reward"],
     "seed": all_configs["seed"],
 }
-
-

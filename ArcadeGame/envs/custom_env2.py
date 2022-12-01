@@ -4,11 +4,10 @@ import numpy as np
 from Games.game6 import ArcadeGame
 from config import all_configs
 
-
 SCREEN_HEIGHT = all_configs["screen_height"]
 SCREEN_WIDTH = all_configs["screen_width"]
-NUMBER_OF_SLOTS = all_configs["number_of_slots"]
-# SCREEN_NUMBER_OF_SLOTS = all_configs["screen_number_of_slots"]
+COLUMN_COUNT = all_configs["number_of_slots"]
+SCREEN_COLUMN_COUNT = all_configs["screen_number_of_slots"]
 K = all_configs["K"]
 NUMBER_OF_SLOTS = all_configs["number_of_slots"]
 
