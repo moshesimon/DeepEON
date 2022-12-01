@@ -28,6 +28,7 @@ def setup_parser():
     parser.add_argument("--total_timesteps")
     return parser
 
+
 config = model_config
 
 if model_config["env"] == 1:

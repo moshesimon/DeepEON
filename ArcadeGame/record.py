@@ -18,13 +18,12 @@ else:
     print("env not selected correctly in config.py")
     exit(1)
 
+
 def record():
     print("saving..")
     height, width, layers = frame_array[0].shape
     out = cv2.VideoWriter(
-        os.path.join(
-            current_dir, "Recordings", f"video_{full_name}.mp4"
-        ),
+        os.path.join(current_dir, "Recordings", f"video_{full_name}.mp4"),
         cv2.VideoWriter_fourcc(*"mp4v"),
         20,
         (width, height),
@@ -33,9 +32,8 @@ def record():
         out.write(frame_array[i])
     out.release()
 
-model = DQN.load(
-    os.path.join(current_dir, "Models", f"{full_name}", "model")
-)
+
+model = DQN.load(os.path.join(current_dir, "Models", f"{full_name}", "model"))
 print("model loaded")
 
 env.highscore = 0

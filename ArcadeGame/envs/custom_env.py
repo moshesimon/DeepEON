@@ -10,6 +10,8 @@ SCREEN_WIDTH = all_configs["screen_width"]
 NUMBER_OF_SLOTS = all_configs["number_of_slots"]
 SCREEN_NUMBER_OF_SLOTS = all_configs["screen_number_of_slots"]
 K = all_configs["K"]
+RIGHT_REWARD = all_configs["right_reward"]
+LEFT_REWARD = all_configs["left_reward"]
 
 
 class CustomEnv(Env):
@@ -34,14 +36,14 @@ class CustomEnv(Env):
             else:
                 self.game.first_slot += 1
             self.game.update_spec_grid()
-            reward = self.config["right_reward"]
+            reward = RIGHT_REWARD
         elif action == 1 and self.game.first_slot > 0:  # LEFT
             if self.game.first_slot - 1 in self.game.gaps:
                 self.game.first_slot -= self.game.slots + 1
             else:
                 self.game.first_slot -= 1
             self.game.update_spec_grid()
-            reward = self.config["left_reward"]
+            reward = LEFT_REWARD
         elif action == 2:  # ENTER
             reward, done = self.game.check_solution()
 

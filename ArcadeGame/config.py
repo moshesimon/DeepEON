@@ -4,11 +4,11 @@ current_dir = os.path.dirname(os.path.abspath(__file__))
 
 
 temp_configs = {
-    "env": 2,
-    "episode_end": 2,
-    "end_limit": 23,
-    "number_of_slots": 16,
-    "screen_number_of_slots": 16,
+    "env": 1,
+    "episode_end": 1,
+    "end_limit": 3,
+    "number_of_slots": 8,
+    "screen_number_of_slots": 8,
     "number_of_slots_evaluated": 8,
     "number_of_episodes_evaluated": 1000,
     "K": 3,
@@ -49,7 +49,7 @@ temp_configs["screen_width"] = (
 
 all_configs = temp_configs
 
-full_name = f"{all_configs['number_of_slots_evaluated']}_{all_configs['number_of_episodes_evaluated']}_{all_configs['number_of_slots']}_{all_configs['K']}_{all_configs['solution_reward']}_{all_configs['rejection_reward']}_{all_configs['seed']}_{all_configs['end_limit']}_{all_configs['env']}"
+full_name = f"{all_configs['number_of_slots_evaluated']}_{all_configs['number_of_episodes_evaluated']}_{all_configs['number_of_slots']}_{all_configs['K']}_{all_configs['solution_reward']}_{all_configs['rejection_reward']}_{all_configs['rejection_reward']}_{all_configs['seed']}_{all_configs['env']}_{all_configs['episode_end']}_{all_configs['end_limit']}"
 
 model_config = {
     "env": all_configs["env"],
