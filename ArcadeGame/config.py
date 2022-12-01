@@ -14,6 +14,7 @@ temp_configs = {
     "K": 3,
     "solution_reward": 10,
     "rejection_reward": -10,
+    "gap_rejection_reward": -15,
     "left_reward": 0,
     "right_reward": 0,
     "seed": 0,

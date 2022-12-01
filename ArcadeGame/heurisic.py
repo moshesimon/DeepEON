@@ -26,7 +26,7 @@ while episode_count < episode_count_targets:
                 NUMBER_OF_SLOTS - game.slots + 1
             ):  # [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15]
                 first_slot = k * (NUMBER_OF_SLOTS + 1) + i
-                if game.is_solution(first_slot=first_slot):
+                if game.get_solution_reward(first_slot=first_slot) == SOLUTION_REWARD:
                     solution = True
                     game.first_slot = first_slot
                     break

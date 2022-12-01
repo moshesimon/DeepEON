@@ -24,6 +24,7 @@ GREEN = all_configs["green"]
 RED = all_configs["red"]
 SOLUTION_REWARD = all_configs["solution_reward"]
 REJECTION_REWARD = all_configs["rejection_reward"]
+GAP_REJECTION_REWARD = all_configs["gap_rejection_reward"]
 LEFT_REWARD = all_configs["left_reward"]
 RIGHT_REWARD = all_configs["right_reward"]
 SEED = all_configs["seed"]
@@ -119,12 +120,11 @@ class ArcadeGame:
 
     def check_solution(self):
         done = False
-        if self.is_solution():
-            reward = SOLUTION_REWARD
+        reward = self.get_solution_reward()
+        if reward == SOLUTION_REWARD:
             self.reward += reward
             self.update_link_grid()
         else:
-            reward = REJECTION_REWARD
             self.blocks += 1
             self.reward += reward
         
@@ -140,7 +140,7 @@ class ArcadeGame:
 
         return reward, done
 
-    def is_solution(self, first_slot=-1):
+    def get_solution_reward(self, first_slot=-1):
         """
         Checks for solution
         """
@@ -151,13 +151,16 @@ class ArcadeGame:
         self.temp_first_slot = first_slot - self.path_selected * (
             NUMBER_OF_SLOTS + 1
         )
-        for row in self.ans_grid.values():  # for spectrum of each link
-            for i in range(self.slots):  # for each slot
-                if (
-                    row[self.temp_first_slot + i] != 0
-                ):  # if slot in spectrum is occupied
-                    return False
-        return True
+        try:
+            for row in self.ans_grid.values():  # for spectrum of each link
+                for i in range(self.slots):  # for each slot
+                    if (
+                        row[self.temp_first_slot + i] != 0
+                    ):  # if slot in spectrum is occupied
+                        return REJECTION_REWARD
+        except IndexError:  # if one of slots is a gap
+            return GAP_REJECTION_REWARD
+        return SOLUTION_REWARD
 
     def path_grid(self, path):
         i = 0
