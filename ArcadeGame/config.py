@@ -10,7 +10,7 @@ temp_configs = {
     "screen_number_of_slots": 16,
     "number_of_slots_evaluated": 16,
     "number_of_episodes_evaluated": 1000,
-    "K": 1,
+    "K": 2,
     "solution_reward": 10,
     "rejection_reward": -10,
     "left_reward": 0,
@@ -47,3 +47,38 @@ temp_configs["screen_width"] = (
 )
 
 all_configs = temp_configs
+
+full_name = f"{all_configs['number_of_slots_evaluated']}_{all_configs['number_of_episodes_evaluated']}_{all_configs['number_of_slots']}_{all_configs['K']}_{all_configs['solution_reward']}_{all_configs['rejection_reward']}_{all_configs['seed']}_{all_configs['end_limit']}_{all_configs['env']}"
+
+model_config = {
+    "env": all_configs["env"],
+    "episode_end": all_configs["episode_end"],
+    "number_of_slots": all_configs["number_of_slots"],
+    "screen_number_of_slots": all_configs["screen_number_of_slots"],
+    "K": all_configs["K"],
+    "solution_reward": all_configs["solution_reward"],
+    "rejection_reward": all_configs["rejection_reward"],
+    "left_reward": all_configs["left_reward"],
+    "right_reward": all_configs["right_reward"],
+    "seed": all_configs["seed"],
+    "end_limit": all_configs["end_limit"],
+    "total_timesteps": all_configs["total_timesteps"],
+    "buffer_size": all_configs["buffer_size"],
+    "batch_size": all_configs["batch_size"],
+    "exploration_final_eps": all_configs["exploration_final_eps"],
+    "exploration_fraction": all_configs["exploration_fraction"],
+    "gamma": all_configs["gamma"],
+    "learning_rate": all_configs["learning_rate"],
+    "learning_starts": all_configs["learning_starts"],
+    "target_update_interval": all_configs["target_update_interval"],
+    "train_freq": all_configs["train_freq"],
+}
+
+game_config = {
+    "K": all_configs["K"],
+    "solution_reward": all_configs["solution_reward"],
+    "rejection_reward": all_configs["rejection_reward"],
+    "left_reward": all_configs["left_reward"],
+    "right_reward": all_configs["right_reward"],
+    "seed": all_configs["seed"],
+}
