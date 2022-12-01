@@ -1,13 +1,12 @@
 from stable_baselines3.common import base_class
 from stable_baselines3.common.evaluation import evaluate_policy
 from stable_baselines3.dqn.dqn import DQN
-from ArcadeGame.envs.custom_env import CustomEnv
 import numpy as np
 import gym
 from typing import Optional
 import matplotlib.pyplot as plt
 import pandas as pd
-from ArcadeGame.config import current_dir, all_configs, full_name
+from config import current_dir, all_configs, full_name
 import os
 
 NUMBER_OF_EPISODES_EVALUATED = all_configs["number_of_episodes_evaluated"]
@@ -49,9 +48,8 @@ def evaluate(
     return episode_rewards, episode_lengths
 
 
-env = CustomEnv()
 env.seed(all_configs["seed"])
-model = DQN.load(os.path.join(current_dir, "Models", full_name))
+model = DQN.load(os.path.join(current_dir, "Models", full_name, "model"))
 print("Loaded")
 model.set_env(env)
 episode_rewards, episode_lengths = evaluate(

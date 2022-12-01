@@ -1,15 +1,15 @@
 from random import seed
 from stable_baselines3.dqn.policies import CnnPolicy
 from stable_baselines3.dqn.dqn import DQN
-from ArcadeGame.envs.custom_env import CustomEnv as CustomEnv1
-from ArcadeGame.envs.custom_env2 import CustomEnv as CustomEnv2
 from wandb.integration.sb3 import WandbCallback
 import wandb
 import argparse
 from datetime import datetime
 import os
 import pathlib
-from ArcadeGame.config import current_dir, model_config, full_name
+from config import current_dir, full_name, model_config
+from envs.custom_env import CustomEnv as CustomEnv1
+from envs.custom_env2 import CustomEnv as CustomEnv2
 
 
 parse = False
@@ -27,7 +27,6 @@ def setup_parser():
     parser.add_argument("--train_freq")
     parser.add_argument("--total_timesteps")
     return parser
-
 
 config = model_config
 

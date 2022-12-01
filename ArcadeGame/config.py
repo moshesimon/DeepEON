@@ -4,7 +4,7 @@ import os
 current_dir = os.path.dirname(os.path.abspath(__file__))
 
 temp_configs = {
-    "env": 1,
+    "env": 2,
     "episode_end": 1,
     "number_of_slots": 8,
     "screen_number_of_slots": 8,
@@ -33,7 +33,7 @@ temp_configs = {
     "screen_height": 150,
     "screen_side_offset": 1,
     "path_rows": 5,
-    "spectrum_slots_rows_from_top": 5,
+    "spectrum_slots_rows_from_top": 6,
     "white": (255, 255, 255),
     "black": (0, 0, 0),
     "green": (0, 255, 0),
@@ -81,3 +81,5 @@ game_config = {
     "right_reward": all_configs["right_reward"],
     "seed": all_configs["seed"],
 }
+
+

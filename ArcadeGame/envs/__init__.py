@@ -1,3 +1,3 @@
 # from importlib.metadata import entry_points
-from ArcadeGame.envs.custom_env2 import CustomEnv
-import ArcadeGame.Games.game6
+from envs.custom_env2 import CustomEnv
+import Games.game6
