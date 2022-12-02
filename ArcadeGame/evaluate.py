@@ -12,7 +12,7 @@ from envs.custom_env2 import CustomEnv as CustomEnv2
 import os
 
 NUMBER_OF_EPISODES_EVALUATED = all_configs["number_of_episodes_evaluated"]
-
+NUMBER_OF_SLOTS_EVALUATED = all_configs["number_of_slots_evaluated"]
 
 def evaluate(
     model: "base_class.BaseAlgorithm",
@@ -77,6 +77,6 @@ df.to_json(
     os.path.join(
         current_dir,
         "Evaluations",
-        f"agent_evaluation_{full_name}.json",
+        f"agent_evaluation_{NUMBER_OF_SLOTS_EVALUATED}_{NUMBER_OF_EPISODES_EVALUATED}_{full_name}.json",
     )
 )
