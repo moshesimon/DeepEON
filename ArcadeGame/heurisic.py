@@ -9,6 +9,7 @@ from config import current_dir, all_configs, full_name
 NUMBER_OF_SLOTS = all_configs["number_of_slots"]
 K = all_configs["K"]
 episode_count_targets = all_configs["number_of_episodes_evaluated"]
+SOLUTION_REWARD = all_configs["solution_reward"]
 
 game = ArcadeGame()
 episode_count = 0
@@ -18,7 +19,7 @@ while episode_count < episode_count_targets:
     done = False
     game.new_game()
     game.draw_screen()
-    game.render()
+    #game.render()
     while not done:
         solution = False
         for k in range(K):
@@ -52,5 +53,5 @@ print(mean_reward)
 index = np.arange(0, episode_count_targets)
 df = pd.DataFrame({"index": index, "Episode Rewards": np.array(episode_rewards)})
 df.to_json(
-    os.path.join(current_dir, "Evaluations", f"heurisrtic_evaluation_{full_name}.json")
+    os.path.join(current_dir, "Evaluations", f"heuristic_evaluation_{NUMBER_OF_SLOTS}_{episode_count_targets}_{full_name}.json")
 )

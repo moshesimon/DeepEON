@@ -9,7 +9,7 @@ temp_configs = {
     "end_limit": 1,
     "number_of_slots": 16,
     "screen_number_of_slots": 16,
-    "number_of_slots_evaluated": 8,
+    "number_of_slots_evaluated": 16,
     "number_of_episodes_evaluated": 1000,
     "K": 3,
     "solution_reward": 10,
