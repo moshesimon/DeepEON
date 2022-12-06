@@ -77,6 +77,6 @@ df.to_json(
     os.path.join(
         current_dir,
         "Evaluations",
-        f"agent_evaluation_{NUMBER_OF_SLOTS_EVALUATED}_{NUMBER_OF_EPISODES_EVALUATED}_{full_name}.json",
+        f"agent_evaluation_{full_name}_{NUMBER_OF_SLOTS_EVALUATED}_{NUMBER_OF_EPISODES_EVALUATED}.json",
     )
 )

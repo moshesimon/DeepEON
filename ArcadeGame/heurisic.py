@@ -53,5 +53,5 @@ print(mean_reward)
 index = np.arange(0, episode_count_targets)
 df = pd.DataFrame({"index": index, "Episode Rewards": np.array(episode_rewards)})
 df.to_json(
-    os.path.join(current_dir, "Evaluations", f"heuristic_evaluation_{NUMBER_OF_SLOTS}_{episode_count_targets}_{full_name}.json")
+    os.path.join(current_dir, "Evaluations", f"heuristic_evaluation_{full_name}_{NUMBER_OF_SLOTS}_{episode_count_targets}.json")
 )
