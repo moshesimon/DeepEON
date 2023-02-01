@@ -1,3 +1,3 @@
-from Games.game6 import main
+from Games.game7 import main
 
 main()
