@@ -1,10 +1,20 @@
 import os
+import logging
+import sys
 
 current_dir = os.path.dirname(os.path.abspath(__file__))
 
+# Setup logging
+logging.basicConfig(
+    stream=sys.stderr,
+    format="%(asctime)s %(levelname)-8s [%(filename)s:%(lineno)d] %(message)s",
+    datefmt="%Y-%m-%d:%H:%M:%S",
+)
+logger = logging.getLogger(__name__)
+logger.setLevel(logging.DEBUG)
 
 temp_configs = {
-    "env": 2,
+    "env": 3,
     "episode_end": 2,
     "end_limit":16,
     "number_of_slots": 8,
@@ -12,20 +22,22 @@ temp_configs = {
     "number_of_slots_evaluated": 8,
     "number_of_episodes_evaluated": 1000,
     "K": 3,
+    "number_of_nodes": 5,
     "solution_reward": 10,
     "rejection_reward": -10,
     "gap_rejection_reward": -15,
     "left_reward": 0,
     "right_reward": 0,
+    "full_grid_reward": 1000,
     "seed": 0,
-    "total_timesteps": 1000000,
-    "buffer_size": 10000,
-    "batch_size": 32,
+    "total_timesteps": 1000,
+    "buffer_size": 100,
+    "batch_size": 64,
     "exploration_final_eps": 0.1,
     "exploration_fraction": 0.5,
-    "gamma": 0.999,
-    "learning_rate": 0.00025,
-    "learning_starts": 50000,
+    "gamma": 0.99,
+    "learning_rate": 0.025,
+    "learning_starts": 100,
     "target_update_interval": 10000,
     "train_freq": (4, "step"),
     "width": 20,

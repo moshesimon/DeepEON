@@ -6,8 +6,8 @@ import sys
 import os
 import time
 
-from config import all_configs
-
+from config import all_configs, logger
+logging = False
 
 NUMBER_OF_SLOTS = all_configs["number_of_slots"]
 # SCREEN_NUMBER_OF_SLOTS = all_configs["screen_number_of_slots"]
@@ -32,30 +32,40 @@ SEED = all_configs["seed"]
 END_LIMIT = all_configs["end_limit"]
 EPISODE_END = all_configs["episode_end"]
 
-NUMBER_OF_NODES = 5
-rows = int(0.5 * NUMBER_OF_NODES * (NUMBER_OF_NODES - 1))
-row_labels = [i for i in range(1, rows + 1)]
-columns = NUMBER_OF_SLOTS + 1
-column_labels = [i for i in range(0, columns)]
+FULL_GRID_REWARD = all_configs["full_grid_reward"]
+NUMBER_OF_NODES = all_configs["number_of_nodes"]
+
+num_rows = int(0.5 * NUMBER_OF_NODES * (NUMBER_OF_NODES - 1))
+row_labels = [i for i in range(1, num_rows + 1)]
+num_columns = NUMBER_OF_SLOTS
+column_labels = [i for i in range(0, num_columns)]
 block_size = 20
 block_padding_all = 1
-padding_top = 30
+padding_top = 50
 padding_left = 30
 padding_right = 30
 padding_bottom = 30
-grid_width = (block_size + block_padding_all) * columns + padding_left + padding_right
-grid_height = (block_size + block_padding_all) * rows + padding_top + padding_bottom
-
 font_padding_left = 5
 font_padding_top = 1
+
+grid_width = (block_size + block_padding_all) * num_columns + padding_left + padding_right
+grid_height = (block_size + block_padding_all) * num_rows + padding_top + padding_bottom
 
 link_names = [i for i in range(1, NUMBER_OF_NODES+1)]
 links = []
 for i in range(len(link_names)):
     for j in range(i+1, len(link_names)):
         links.append(f"{link_names[i]}-{link_names[j]}")
-print(links)
-print(len(links))
+
+
+RED = (255, 0, 0)
+BLACK = (0, 0, 0)
+GREEN = (0, 255, 0)
+BLUE = (0, 0, 255)
+WHITE = (255, 255, 255)
+YELLOW = (255, 255, 0)
+GRAY = (128, 128, 128)
+ORANGE = (255, 165, 0)
 
 class ArcadeGame:
     def __init__(self):
@@ -67,17 +77,48 @@ class ArcadeGame:
         self.seed()
 
     def draw_screen(self):
-        self.background.fill(RED)
+        self.background.fill(GRAY)
 
         top = padding_top
-        for i in range(rows):
+        for i in range(num_rows):
             left = padding_left
-            label = self.myfont.render(str(links[i]), 1, (255, 255, 0))
+            label = self.myfont.render(str(links[i]), 1, YELLOW)
             self.background.blit(label, (left-padding_left+font_padding_left, top+font_padding_top))
-            for j in range(columns):
-                pygame.draw.rect(self.background,(0,255,255),(left,top,block_size,block_size))
+            for j in range(num_columns):
+                if self.grid[i, j] == 0:
+                    pygame.draw.rect(self.background,GREEN,(left,top,block_size,block_size))
+                elif self.grid[i, j] == 1:
+                    pygame.draw.rect(self.background,RED,(left,top,block_size,block_size))
                 left = left + block_size + block_padding_all
             top = top + block_size + block_padding_all
+        for i in range(self.slot_width):
+            pygame.draw.rect(self.background,ORANGE, (padding_left+(self.current_position[1]+i)*(block_size+block_padding_all), padding_top+self.current_position[0]*(block_size+block_padding_all), block_size, block_size))
+        
+        label = self.myfont.render("SRC", 1, BLACK)
+        self.background.blit(label, (padding_left/2, font_padding_top))
+        label = self.myfont.render(str(self.src_node), 1, BLACK)
+        self.background.blit(label, (padding_left/2, font_padding_top + padding_top/2))
+
+        label = self.myfont.render("CURR", 1, BLACK)
+        self.background.blit(label, ((block_size+block_padding_all)*(2*NUMBER_OF_SLOTS/5) + padding_left, font_padding_top))
+        label = self.myfont.render(str(self.curr_node), 1, BLACK)
+        self.background.blit(label, ((block_size+block_padding_all)*(2*NUMBER_OF_SLOTS/5) + padding_left, font_padding_top + padding_top/2))
+
+        label = self.myfont.render("DST", 1, BLACK)
+        self.background.blit(label, (padding_left + (block_size+block_padding_all)*(NUMBER_OF_SLOTS) - padding_right/2, font_padding_top))
+        label = self.myfont.render(str(self.dst_node), 1, BLACK)
+        self.background.blit(label, (padding_left + (block_size+block_padding_all)*(NUMBER_OF_SLOTS) - padding_right/2, font_padding_top + padding_top/2))
+
+        label = self.myfont.render("ROUND", 1, BLACK)
+        self.background.blit(label, (padding_left, num_rows*(block_size+block_padding_all) + padding_top + padding_bottom/2))
+        label = self.myfont.render(str(self.rounds), 1, BLACK)
+        self.background.blit(label, ((block_size+block_padding_all)*(3*NUMBER_OF_SLOTS/9) + padding_left, num_rows*(block_size+block_padding_all) + padding_top + padding_bottom/2))
+
+        label = self.myfont.render("SCORE", 1, BLACK)
+        self.background.blit(label, ((block_size+block_padding_all)*(6*NUMBER_OF_SLOTS/10) + padding_left, num_rows*(block_size+block_padding_all) + padding_top + padding_bottom/2))
+        label = self.myfont.render(str(self.reward), 1, BLACK)
+        self.background.blit(label, ((block_size+block_padding_all)*(9*NUMBER_OF_SLOTS/10) + padding_left, num_rows*(block_size+block_padding_all) + padding_top + padding_bottom/2))
+
         self.surfarr = pygame.surfarray.array3d(self.background)
         return self.surfarr
 
@@ -86,42 +127,59 @@ class ArcadeGame:
         pygame.display.set_caption("DeepEON Arcade")
         self.screen.blit(self.background, (0, 0))
         pygame.display.flip()
-        print(
-            f"Round: {self.rounds} Number of blocks: {self.blocks} Reward: {self.reward} High Score: {self.highscore}"
-        )
 
     def draw_box(self, col, row, colour):
         pygame.draw.rect(
             self.background, colour, (col * WIDTH, row * HEIGHT, WIDTH, HEIGHT)
         )
-
-    def new_game(self):
+    
+    def reset_game(self):
         self.score = 0
         self.reward = 0
         self.blocks = 0
         self.rounds = 0
-        self.link_grid = {}
-        # self.new_round()
+        self.grid = np.zeros((num_rows, num_columns), dtype=np.uint8)
+        self.new_game()
+
+    def new_game(self):
+        self.rounds += 1
+        self.src_node = np.random.randint(1, NUMBER_OF_NODES + 1)
+        self.dst_node = np.random.randint(1, NUMBER_OF_NODES + 1)
+        while self.dst_node == self.src_node:
+            self.dst_node = np.random.randint(1, NUMBER_OF_NODES + 1)
+        self.curr_node = self.src_node
+        self.new_round()
 
     def new_round(self):
-        """
-        Sets up all parameters for a new round
-        """
-        self.first_slot = 0
-        self.rounds += 1
-        self.target = np.random.randint(2, 7)
-        self.source = np.random.randint(1, self.target)
-        self.slots = np.random.randint(2, 5)
-        self.update_spec_grid()  # populate spectrum grid
+        self.current_position = [0, 0]  # [row, column]
+        self.slot_width = np.random.randint(2, 5)
 
-    def update_spec_grid(self):
-        # self.spec_grid = np.zeros(NUMBER_OF_SLOTS * K + K - 1, dtype=int)
-        try:
-            for i in range(self.slots):
-                self.spec_grid[self.first_slot + i] = 1
-            return 0, False
-        except:
-            return REJECTION_REWARD, True
+    def allow_slot_allocation(self):
+        selected_node1 = int(links[self.current_position[0]].split('-')[0])
+        selected_node2 = int(links[self.current_position[0]].split('-')[1])
+        if self.curr_node != selected_node1 and self.curr_node != selected_node2:
+            if logging:
+                logger.info(f"[WRONG PATH] Slot allocation not allowed at {self.current_position[0], self.current_position[1]}")
+            return False
+        for i in range(self.slot_width):
+            if self.grid[self.current_position[0]][self.current_position[1] + i] == 1:
+                if logging:
+                    logger.info(f"[TAKEN] Slot allocation not allowed at {self.current_position[0], self.current_position[1] + i}")
+                return False
+        return True
+
+    def allocate_slot(self):
+        selected_node1 = int(links[self.current_position[0]].split('-')[0])
+        selected_node2 = int(links[self.current_position[0]].split('-')[1])
+        if self.curr_node == selected_node1:
+            self.curr_node = selected_node2
+        elif self.curr_node == selected_node2:
+            self.curr_node = selected_node1
+        else:
+            if logging:
+                logger.error(f"Something went wrong. Current node: {self.curr_node} Selected node 1: {selected_node1} Selected node 2: {selected_node2}")
+        for i in range(self.slot_width):
+            self.grid[self.current_position[0]][self.current_position[1] + i] = 1
 
     def check_solution(self):
         done = False
@@ -145,47 +203,10 @@ class ArcadeGame:
 
         return reward, done
 
-    def get_solution_reward(self, first_slot=-1):
-        """
-        Checks for solution
-        """
-        if first_slot == -1:
-            first_slot = self.first_slot
-        self.path_selected = first_slot // (NUMBER_OF_SLOTS + 1)
-        self.ans_grid = self.path_grid(self.paths[self.path_selected])
-        self.temp_first_slot = first_slot - self.path_selected * (NUMBER_OF_SLOTS + 1)
-        try:
-            for row in self.ans_grid.values():  # for spectrum of each link
-                for i in range(self.slots):  # for each slot
-                    if (
-                        row[self.temp_first_slot + i] != 0
-                    ):  # if slot in spectrum is occupied
-                        return REJECTION_REWARD
-        except IndexError:  # if one of slots is a gap
-            return GAP_REJECTION_REWARD
-        return SOLUTION_REWARD
-
-    def path_grid(self, path):
-        i = 0
-        all_edges = []
-        while i < len(path) - 1:  # prepare all edges in path
-            if path[i] < path[i + 1]:
-                all_edges.append((path[i], path[i + 1]))
-            else:
-                all_edges.append((path[i + 1], path[i]))
-            i += 1
-
-        temp_path_grid = {}
-        for edge in all_edges:  # populate answer grid with edges
-            temp_path_grid[edge] = self.link_grid[edge]
-        return temp_path_grid
-
-    def update_link_grid(self):
-        for edge in self.ans_grid.keys():
-            grid = self.link_grid[edge]
-            for i in range(self.slots):
-                grid[self.temp_first_slot + i] = 1
-            self.link_grid[edge] = grid  #
+    def check_if_full_grid(self):
+        if np.count_nonzero(self.grid) == num_rows * num_columns:
+            return True
+        return False
 
     def seed(self):
         np.random.seed(SEED)
@@ -196,46 +217,57 @@ class ArcadeGame:
 
 
 def main():  # only used for human mode
-    done = False
     game = ArcadeGame()
-    game.new_game()
+    game.reset_game()
     game.draw_screen()
     game.render()
-    while not done:
-        for event in pygame.event.get():
-            if event.type == pygame.QUIT:
-                done = True
-    pygame.quit()
-    exit(0)
     while True:
         for event in pygame.event.get():
-
             if event.type == pygame.QUIT:
                 game.exit()
             if event.type == pygame.KEYDOWN:
-                if (
-                    event.key == pygame.K_RIGHT
-                    and game.first_slot < NUMBER_OF_SLOTS * K + K - 1 - game.slots
-                ):
-                    if game.first_slot + game.slots in game.gaps:
-                        game.first_slot += game.slots + 1
-                    else:
-                        game.first_slot += 1
-                    game.update_spec_grid()
+                if (event.key == pygame.K_RIGHT):
+                    if game.current_position[1] < num_columns - game.slot_width:
+                        game.current_position[1] += 1
                     game.draw_screen()
                     game.render()
-                elif event.key == pygame.K_LEFT and game.first_slot > 0:
-                    if game.first_slot - 1 in game.gaps:
-                        game.first_slot -= game.slots + 1
-                    else:
-                        game.first_slot -= 1
-                    game.update_spec_grid()
+                elif event.key == pygame.K_LEFT:
+                    if game.current_position[1] > 0:
+                        game.current_position[1] -= 1
+                    game.draw_screen()
+                    game.render()
+                elif event.key == pygame.K_UP:
+                    if game.current_position[0] > 0:
+                        game.current_position[0] -= 1
+                    game.draw_screen()
+                    game.render()
+                elif event.key == pygame.K_DOWN:
+                    if game.current_position[0] < num_rows - 1:
+                        game.current_position[0] += 1
                     game.draw_screen()
                     game.render()
                 elif event.key == pygame.K_RETURN:
-                    reward, done = game.check_solution()
-                    if done:
-                        game.new_game()
+                    if game.allow_slot_allocation():
+                        game.allocate_slot()
+                        game.draw_screen()
+                        game.render()
+                        if game.curr_node == game.dst_node:
+                            game.reward += SOLUTION_REWARD
+                            if logging:
+                                logger.info(f"Round {game.rounds} over. Reward: {game.reward}")
+                            if game.check_if_full_grid():
+                                game.reward += FULL_GRID_REWARD
+                                if logging:
+                                    logger.info(f"[FULL GRID] Game with {game.rounds} rounds finished. Reward: {game.reward}")
+                                game.reset_game()
+                            else:
+                                game.new_game()
+                        else:
+                            game.new_round()
+                        game.draw_screen()
+                        game.render()
+                elif event.key == pygame.K_SPACE:
+                    game.reset_game()
                     game.draw_screen()
                     game.render()
 

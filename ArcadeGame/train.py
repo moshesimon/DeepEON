@@ -7,10 +7,15 @@ import argparse
 from datetime import datetime
 import os
 import pathlib
-from config import current_dir, full_name, model_config
+from config import current_dir, full_name, model_config, all_configs
 from envs.custom_env import CustomEnv as CustomEnv1
 from envs.custom_env2 import CustomEnv as CustomEnv2
+from envs.custom_env3 import CustomEnv as CustomEnv3
 
+NUMBER_OF_NODES = all_configs["number_of_nodes"]
+NUMBER_OF_SLOTS = all_configs["number_of_slots"]
+
+full_name = f"env3_{NUMBER_OF_NODES}_nodes_{NUMBER_OF_SLOTS}_slots_test1"
 
 parse = False
 # Build your ArgumentParser however you like
@@ -35,6 +40,8 @@ if model_config["env"] == 1:
     env = CustomEnv1()
 elif model_config["env"] == 2:
     env = CustomEnv2()
+elif model_config["env"] == 3:
+    env = CustomEnv3()
 else:
     print("env not selected correctly in config.py")
     exit(1)
