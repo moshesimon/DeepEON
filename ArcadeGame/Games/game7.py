@@ -148,11 +148,11 @@ class ArcadeGame:
         while self.dst_node == self.src_node:
             self.dst_node = np.random.randint(1, NUMBER_OF_NODES + 1)
         self.curr_node = self.src_node
+        self.slot_width = np.random.randint(2, 5)
         self.new_round()
 
     def new_round(self):
         self.current_position = [0, 0]  # [row, column]
-        self.slot_width = np.random.randint(2, 5)
 
     def allow_slot_allocation(self):
         selected_node1 = int(links[self.current_position[0]].split('-')[0])
