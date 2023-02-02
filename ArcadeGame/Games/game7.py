@@ -143,6 +143,8 @@ class ArcadeGame:
 
     def new_game(self):
         self.rounds += 1
+        self.block_slot_selection = False
+        self.selected_slot = 0
         self.src_node = np.random.randint(1, NUMBER_OF_NODES + 1)
         self.dst_node = np.random.randint(1, NUMBER_OF_NODES + 1)
         while self.dst_node == self.src_node:
@@ -152,7 +154,7 @@ class ArcadeGame:
         self.new_round()
 
     def new_round(self):
-        self.current_position = [0, 0]  # [row, column]
+        self.current_position = [0, self.selected_slot]  # [row, column]
 
     def allow_slot_allocation(self):
         selected_node1 = int(links[self.current_position[0]].split('-')[0])
@@ -180,6 +182,7 @@ class ArcadeGame:
                 logger.error(f"Something went wrong. Current node: {self.curr_node} Selected node 1: {selected_node1} Selected node 2: {selected_node2}")
         for i in range(self.slot_width):
             self.grid[self.current_position[0]][self.current_position[1] + i] = 1
+        self.selected_slot = self.current_position[1]
 
     def check_solution(self):
         done = False
@@ -226,16 +229,18 @@ def main():  # only used for human mode
             if event.type == pygame.QUIT:
                 game.exit()
             if event.type == pygame.KEYDOWN:
-                if (event.key == pygame.K_RIGHT):
-                    if game.current_position[1] < num_columns - game.slot_width:
-                        game.current_position[1] += 1
-                    game.draw_screen()
-                    game.render()
+                if event.key == pygame.K_RIGHT:
+                    if not game.block_slot_selection:
+                        if game.current_position[1] < num_columns - game.slot_width:
+                            game.current_position[1] += 1
+                        game.draw_screen()
+                        game.render()
                 elif event.key == pygame.K_LEFT:
-                    if game.current_position[1] > 0:
-                        game.current_position[1] -= 1
-                    game.draw_screen()
-                    game.render()
+                    if not game.block_slot_selection:
+                        if game.current_position[1] > 0:
+                            game.current_position[1] -= 1
+                        game.draw_screen()
+                        game.render()
                 elif event.key == pygame.K_UP:
                     if game.current_position[0] > 0:
                         game.current_position[0] -= 1
@@ -249,6 +254,7 @@ def main():  # only used for human mode
                 elif event.key == pygame.K_RETURN:
                     if game.allow_slot_allocation():
                         game.allocate_slot()
+                        game.block_slot_selection = True
                         game.draw_screen()
                         game.render()
                         if game.curr_node == game.dst_node:

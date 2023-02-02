@@ -17,14 +17,16 @@ class CustomEnv(Env):
 
     def step(self, action):
         reward, done, info = self.game.reward, False, {}
-        if (action == 0):  # RIGHT
-            if self.game.current_position[1] < num_columns - self.game.slot_width:
-                self.game.current_position[1] += 1
-            observation = self.game.draw_screen()
+        if action == 0:  # RIGHT
+            if not self.game.block_slot_selection:
+                if self.game.current_position[1] < num_columns - self.game.slot_width:
+                    self.game.current_position[1] += 1
+                observation = self.game.draw_screen()
         elif action == 1:  # LEFT
-            if self.game.current_position[1] > 0:
-                self.game.current_position[1] -= 1
-            observation = self.game.draw_screen()
+            if not self.game.block_slot_selection:
+                if self.game.current_position[1] > 0:
+                    self.game.current_position[1] -= 1
+                observation = self.game.draw_screen()
         elif action == 3:  # UP
             if self.game.current_position[0] > 0:
                 self.game.current_position[0] -= 1
@@ -36,6 +38,7 @@ class CustomEnv(Env):
         elif action == 4:  # ENTER
             if self.game.allow_slot_allocation():
                 self.game.allocate_slot()
+                self.game.block_slot_selection = True
                 # self.game.draw_screen()
                 if self.game.curr_node == self.game.dst_node:
                     self.game.reward += SOLUTION_REWARD
