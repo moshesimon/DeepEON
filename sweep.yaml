@@ -7,7 +7,7 @@ parameters:
     distribution: categorical
     values: [0.9, 0.95, 0.98, 0.99, 0.995, 0.999, 0.9999]
   learning_rate: 
-    distribution: log_uniform
+    distribution: log_uniform_values
     max: 1
     min: 0.00001
   batch_size:
@@ -26,7 +26,7 @@ parameters:
     max: 0.2
   target_update_interval: 
     distribution: categorical
-    values: [1, 1000, 5000, 10000, 15000, 20000]
+    values: [1, 100, 1000, 5000, 10000]
   learning_starts:
     distribution: categorical
     values: [0, 1000, 5000, 10000, 20000,50000]
@@ -34,7 +34,8 @@ parameters:
     distribution: categorical
     values: [1, 4, 8, 16, 128, 256, 1000]
 command:
-- ${env}
-- .\venv\Scripts\python.exe
+#- ${env}
+#- .\venv\Scripts\python.exe
+- C:/Users/moshe/anaconda3/envs/eon/python.exe
 - ArcadeGame\train.py
 - ${args}

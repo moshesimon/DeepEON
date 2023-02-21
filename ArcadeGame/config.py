@@ -5,13 +5,13 @@ current_dir = os.path.dirname(os.path.abspath(__file__))
 
 temp_configs = {
     "env": 2,
-    "episode_end": 2,
-    "end_limit":16,
+    "episode_end": 1,
+    "end_limit":1,
     "number_of_slots": 16,
-    "screen_number_of_slots": 24,
-    "number_of_slots_evaluated": 8,
+    "screen_number_of_slots": 16,
+    "number_of_slots_evaluated": 16,
     "number_of_episodes_evaluated": 1000,
-    "K": 3,
+    "K": 1,
     "solution_reward": 10,
     "rejection_reward": -10,
     "gap_rejection_reward": -15,
@@ -31,20 +31,23 @@ temp_configs = {
     "width": 20,
     "height": 20,
     "screen_width": 0,
-    "screen_height": 150,
+    "screen_height": 230,
     "screen_side_offset": 1,
-    "path_rows": 5,
-    "spectrum_slots_rows_from_top": 6,
+    "path_rows": 9,
+    "spectrum_slots_rows_from_top": 10,
     "white": (255, 255, 255),
     "black": (0, 0, 0),
-    "green": (0, 255, 0),
+    "green": (255, 255, 0),
     "red": (255, 0, 0),
 }
 
 temp_configs["screen_width"] = (
     temp_configs["screen_number_of_slots"] * temp_configs["width"]
     * temp_configs["K"]
-    + (temp_configs["K"] + 1) * temp_configs["width"]
+    + (temp_configs["K"] + 2) * temp_configs["width"]
+    + 2 * temp_configs["screen_side_offset"]
+    + temp_configs["screen_number_of_slots"] * temp_configs["width"]
+    * (temp_configs["K"])
 )
 
 all_configs = temp_configs

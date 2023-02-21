@@ -6,20 +6,20 @@ import os
 from config import current_dir
 
 
-PLOT_TITLE = "16 slots env2 end 1 (max=1) vs 16 slots env2 end 2 (max=27)"
-LEGEND = ["DeepEON end lim 1", "DeepEON end lim 3"]
-PLAYER_TYPE = ["agent", "agent"]
-NUMBER_OF_SLOTS_TRAINED = [16, 16]
-SCREEN_NUMBER_OF_SLOTS_TRAINED = [16, 16]
-K = [3, 3]
+PLOT_TITLE = "DeepEON vs Heuristic (24 Slots,env=2,ep_end=1,end_lim=1, k=1)"
+LEGEND = ["DeepEON", "Heuristic"]
+PLAYER_TYPE = ["agent", "heuristic"]
+NUMBER_OF_SLOTS_TRAINED = [24,24]
+SCREEN_NUMBER_OF_SLOTS_TRAINED = [24,24]
+K = [1,1]
 SOLUTION_REWARD = [10, 10]
 REJECTION_REWARD = [-10, -10]
-GAP_REJECTION_REWARD = [-15, -15]
+GAP_REJECTION_REWARD = [6,6]
 SEED = [0, 0]
 ENV = [2, 2]
-EPISODE_END = [1, 1]
-END_LIMIT = [1, 3]
-NUMBER_OF_SLOTS_EVALUATED = [16, 16]
+EPISODE_END = [1,1]
+END_LIMIT = [1,1]
+NUMBER_OF_SLOTS_EVALUATED = [24,24]
 NUMBER_OF_EPISODES_EVALUATED = [1000, 1000]
 AVERAGE_OVER = 50
 

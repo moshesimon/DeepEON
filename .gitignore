@@ -143,3 +143,4 @@ output*
 ArcadeGame/config.py
 Evaluation data
 tbEON
+ArcadeGame/test.py
