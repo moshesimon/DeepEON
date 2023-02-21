@@ -150,7 +150,8 @@ class ArcadeGame:
         while self.dst_node == self.src_node:
             self.dst_node = np.random.randint(1, NUMBER_OF_NODES + 1)
         self.curr_node = self.src_node
-        self.slot_width = np.random.randint(2, 5)
+        # self.slot_width = np.random.randint(2, 5)
+        self.slot_width = 2
         self.new_round()
 
     def new_round(self):

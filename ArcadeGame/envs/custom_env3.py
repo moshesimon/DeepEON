@@ -21,19 +21,31 @@ class CustomEnv(Env):
             if not self.game.block_slot_selection:
                 if self.game.current_position[1] < num_columns - self.game.slot_width:
                     self.game.current_position[1] += 1
+                else:
+                    pass # negative reward ?
                 observation = self.game.draw_screen()
+            else:
+                pass # negative reward ?
         elif action == 1:  # LEFT
             if not self.game.block_slot_selection:
                 if self.game.current_position[1] > 0:
                     self.game.current_position[1] -= 1
+                else:
+                    pass # negative reward ?
                 observation = self.game.draw_screen()
+            else:
+                pass # negative reward ?
         elif action == 3:  # UP
             if self.game.current_position[0] > 0:
                 self.game.current_position[0] -= 1
+            else:
+                pass # negative reward ?
             observation = self.game.draw_screen()
         elif action == 3:  # DOWN
             if self.game.current_position[0] < num_rows - 1:
                 self.game.current_position[0] += 1
+            else:
+                pass # negative reward ?
             observation = self.game.draw_screen()
         elif action == 4:  # ENTER
             if self.game.allow_slot_allocation():
@@ -49,9 +61,13 @@ class CustomEnv(Env):
                     else:
                         self.game.new_game()
                 else:
+                    # negative reward ?
                     self.game.new_round()
                 observation = self.game.draw_screen()
+            else:
+                pass # negative reward ?
         elif action == 5:  # SPACE
+            # large negative reward ?
             self.game.reset_game()
             done = True
 
