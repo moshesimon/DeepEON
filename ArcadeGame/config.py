@@ -4,6 +4,7 @@ current_dir = os.path.dirname(os.path.abspath(__file__))
 
 
 temp_configs = {
+    "game": 8,
     "env": 2,
     "episode_end": 1,
     "end_limit":1,
@@ -18,6 +19,7 @@ temp_configs = {
     "left_reward": 0,
     "right_reward": 0,
     "seed": 0,
+    "seed_eval": 1,
     "total_timesteps": 1000000,
     "buffer_size": 10000,
     "batch_size": 32,
@@ -52,7 +54,7 @@ temp_configs["screen_width"] = (
 
 all_configs = temp_configs
 
-full_name = f"{all_configs['number_of_slots']}_{all_configs['screen_number_of_slots']}_{all_configs['K']}_{all_configs['solution_reward']}_{all_configs['rejection_reward']}_{all_configs['gap_rejection_reward']}_{all_configs['seed']}_{all_configs['env']}_{all_configs['episode_end']}_{all_configs['end_limit']}"
+full_name = f"{all_configs['gamma']}_{all_configs['batch_size']}_{all_configs['learning_rate']}_{all_configs['learning_starts']}_{all_configs['target_update_interval']}_{all_configs['train_freq']}_{all_configs['total_timesteps']}_{all_configs['buffer_size']}_{all_configs['exploration_final_eps']}_{all_configs['exploration_fraction']}_{all_configs['game']}_{all_configs['number_of_slots']}_{all_configs['screen_number_of_slots']}_{all_configs['K']}_{all_configs['solution_reward']}_{all_configs['rejection_reward']}_{all_configs['gap_rejection_reward']}_{all_configs['seed']}_{all_configs['env']}_{all_configs['episode_end']}_{all_configs['end_limit']}"
 
 model_config = {
     "env": all_configs["env"],
@@ -79,6 +81,7 @@ model_config = {
 }
 
 game_config = {
+    "game": all_configs["game"],
     "K": all_configs["K"],
     "solution_reward": all_configs["solution_reward"],
     "rejection_reward": all_configs["rejection_reward"],

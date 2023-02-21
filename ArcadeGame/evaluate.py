@@ -13,6 +13,7 @@ import os
 
 NUMBER_OF_EPISODES_EVALUATED = all_configs["number_of_episodes_evaluated"]
 NUMBER_OF_SLOTS_EVALUATED = all_configs["number_of_slots_evaluated"]
+SEED_EVALUATED = all_configs["seed_eval"]
 
 def evaluate(
     model: "base_class.BaseAlgorithm",
@@ -58,7 +59,7 @@ else:
     print("env not selected correctly in config.py")
     exit(1)
 
-env.seed(all_configs["seed"])
+env.seed(all_configs["seed_eval"])
 model = DQN.load(os.path.join(current_dir, "Models", full_name, "model"))
 print("Loaded")
 model.set_env(env)
@@ -77,6 +78,6 @@ df.to_json(
     os.path.join(
         current_dir,
         "Evaluations",
-        f"agent_evaluation_{full_name}_{NUMBER_OF_SLOTS_EVALUATED}_{NUMBER_OF_EPISODES_EVALUATED}.json",
+        f"agent_evaluation_{full_name}_{NUMBER_OF_SLOTS_EVALUATED}_{NUMBER_OF_EPISODES_EVALUATED}_{SEED_EVALUATED}.json",
     )
 )
