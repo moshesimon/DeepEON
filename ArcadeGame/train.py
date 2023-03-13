@@ -39,6 +39,8 @@ else:
     print("env not selected correctly in config.py")
     exit(1)
 
+env.seed(config["seed"])
+
 if parse:
     parser = setup_parser()
 

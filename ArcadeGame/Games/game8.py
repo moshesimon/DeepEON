@@ -7,7 +7,6 @@ import os
 from config import all_configs
 
 NUMBER_OF_SLOTS = all_configs["number_of_slots"]
-# SCREEN_NUMBER_OF_SLOTS = all_configs["screen_number_of_slots"]
 K = all_configs["K"]
 WIDTH = all_configs["width"]
 HEIGHT = all_configs["height"]
@@ -42,7 +41,6 @@ class ArcadeGame:
         self.gaps = []
         for i in range(K):
             self.gaps.append(NUMBER_OF_SLOTS + (NUMBER_OF_SLOTS + 1) * i)
-        self.seed()
 
     def draw_screen(self):
         self.background.fill(BLACK)
@@ -201,8 +199,8 @@ class ArcadeGame:
                 grid[self.temp_first_slot + i] = 1
             self.link_grid[edge] = grid  #
 
-    def seed(self):
-        np.random.seed(SEED)
+    def seed(self, seed=0):
+        np.random.seed(seed)
 
     def exit(self):
         pygame.quit()

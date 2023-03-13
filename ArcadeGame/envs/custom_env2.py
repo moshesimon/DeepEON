@@ -1,15 +1,16 @@
 from gym import Env
 from gym import spaces
 import numpy as np
-from Games.game8 import ArcadeGame
+from Games import game8
+from Games import game6
 from config import all_configs
 
 SCREEN_HEIGHT = all_configs["screen_height"]
 SCREEN_WIDTH = all_configs["screen_width"]
 COLUMN_COUNT = all_configs["number_of_slots"]
-SCREEN_COLUMN_COUNT = all_configs["screen_number_of_slots"]
 K = all_configs["K"]
 NUMBER_OF_SLOTS = all_configs["number_of_slots"]
+GAME = all_configs["game"]
 
 
 class CustomEnv(Env):
@@ -17,7 +18,10 @@ class CustomEnv(Env):
     num_envs = 1
 
     def __init__(self):
-        self.game = ArcadeGame()
+        if GAME == 6:
+            self.game = game6.ArcadeGame()
+        elif GAME == 8:
+            self.game = game8.ArcadeGame()
         self.action_space = spaces.Discrete(NUMBER_OF_SLOTS * K + K - 1)
         self.observation_space = spaces.Box(
             shape=(SCREEN_WIDTH, SCREEN_HEIGHT, 3), low=0, high=255, dtype=np.uint8
@@ -42,6 +46,9 @@ class CustomEnv(Env):
             return self.game.draw_screen()  # return RGB frame suitable for video
         else:
             super(CustomEnv, self).render(mode=mode)  # just raise an exceptionset
+
+    def seed(self, seed=0):
+        self.game.seed(seed)
 
     def close(self):
         self.game.exit()

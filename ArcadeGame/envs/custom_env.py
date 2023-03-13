@@ -8,7 +8,6 @@ from config import all_configs
 SCREEN_HEIGHT = all_configs["screen_height"]
 SCREEN_WIDTH = all_configs["screen_width"]
 NUMBER_OF_SLOTS = all_configs["number_of_slots"]
-SCREEN_NUMBER_OF_SLOTS = all_configs["screen_number_of_slots"]
 K = all_configs["K"]
 RIGHT_REWARD = all_configs["right_reward"]
 LEFT_REWARD = all_configs["left_reward"]

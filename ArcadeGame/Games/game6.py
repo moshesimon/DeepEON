@@ -186,8 +186,8 @@ class ArcadeGame:
                 grid[self.temp_first_slot + i] = 1
             self.link_grid[edge] = grid  #
 
-    def seed(self):
-        np.random.seed(SEED)
+    def seed(self, seed=None):
+        np.random.seed(seed)
 
     def exit(self):
         pygame.quit()

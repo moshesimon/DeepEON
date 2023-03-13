@@ -1,8 +1,9 @@
 from datetime import datetime
-from Games.game6 import ArcadeGame
 import numpy as np
 import pandas as pd
 import os
+from Games import game8
+from Games import game6
 from config import current_dir, all_configs, full_name
 
 
@@ -10,8 +11,15 @@ NUMBER_OF_SLOTS = all_configs["number_of_slots"]
 K = all_configs["K"]
 episode_count_targets = all_configs["number_of_episodes_evaluated"]
 SOLUTION_REWARD = all_configs["solution_reward"]
+SEED_EVALUATED = all_configs["seed_eval"]
+GAME = all_configs["game"]
 
-game = ArcadeGame()
+if GAME == 6:
+    game = game6.ArcadeGame()
+elif GAME == 8:
+    game = game8.ArcadeGame()
+
+game.seed(SEED_EVALUATED)
 episode_count = 0
 episode_rewards = []
 while episode_count < episode_count_targets:
@@ -53,5 +61,5 @@ print(mean_reward)
 index = np.arange(0, episode_count_targets)
 df = pd.DataFrame({"index": index, "Episode Rewards": np.array(episode_rewards)})
 df.to_json(
-    os.path.join(current_dir, "Evaluations", f"heuristic_evaluation_{full_name}_{NUMBER_OF_SLOTS}_{episode_count_targets}.json")
+    os.path.join(current_dir, "Evaluations", f"heuristic_evaluation_{full_name}_{episode_count_targets}_{SEED_EVALUATED}.json")
 )
