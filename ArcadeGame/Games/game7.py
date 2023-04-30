@@ -19,10 +19,10 @@ SCREEN_HEIGHT = all_configs["screen_height"]
 LEFT_SIDE_OFFSET = all_configs["screen_side_offset"]
 PATH_ROWS = all_configs["path_rows"]
 SPECTRUM_SLOTS_ROWS_FROM_TOP = all_configs["spectrum_slots_rows_from_top"]
-WHITE = all_configs["white"]
-BLACK = all_configs["black"]
-GREEN = all_configs["green"]
-RED = all_configs["red"]
+# WHITE = all_configs["self.WHITE"]
+# BLACK = all_configs["self.BLACK"]
+# GREEN = all_configs["self.GREEN"]
+# RED = all_configs["self.RED"]
 SOLUTION_REWARD = all_configs["solution_reward"]
 REJECTION_REWARD = all_configs["rejection_reward"]
 GAP_REJECTION_REWARD = all_configs["gap_rejection_reward"]
@@ -58,18 +58,27 @@ for i in range(len(link_names)):
         links.append(f"{link_names[i]}-{link_names[j]}")
 
 
-RED = (255, 0, 0)
-BLACK = (0, 0, 0)
-GREEN = (0, 255, 0)
-BLUE = (0, 0, 255)
-WHITE = (255, 255, 255)
-YELLOW = (255, 255, 0)
-GRAY = (128, 128, 128)
-ORANGE = (255, 165, 0)
-
 class ArcadeGame:
-    def __init__(self):
+    def __init__(self, mode):
         pygame.init()
+        if mode != "human" and mode != "rgb_array":
+            raise Exception("Invalid mode!")
+        if mode == "rgb_array":
+            self.BLACK = (0, 0, 0)
+            self.WHITE = (0, 0, 1)
+            self.GRAY = (0, 0, 2)
+            self.GREEN = (0, 0, 3)
+            self.self.YELLOW = (0, 0, 4)
+            self.self.ORANGE = (0, 0, 5)
+            self.RED = (0, 0, 6)
+        else:
+            self.RED = (255, 0, 0)
+            self.BLACK = (0, 0, 0)
+            self.GREEN = (0, 255, 0)
+            self.WHITE = (255, 255, 255)
+            self.YELLOW = (255, 255, 0)
+            self.GRAY = (128, 128, 128)
+            self.ORANGE = (255, 165, 0)
         self.myfont = pygame.font.SysFont("monospace", 14)
         self.window = (grid_width, grid_height)
         self.background = pygame.Surface(self.window)
@@ -77,46 +86,46 @@ class ArcadeGame:
         self.seed()
 
     def draw_screen(self):
-        self.background.fill(GRAY)
+        self.background.fill(self.GRAY)
 
         top = padding_top
         for i in range(num_rows):
             left = padding_left
-            label = self.myfont.render(str(links[i]), 1, YELLOW)
+            label = self.myfont.render(str(links[i]), 1, self.YELLOW)
             self.background.blit(label, (left-padding_left+font_padding_left, top+font_padding_top))
             for j in range(num_columns):
                 if self.grid[i, j] == 0:
-                    pygame.draw.rect(self.background,GREEN,(left,top,block_size,block_size))
+                    pygame.draw.rect(self.background,self.GREEN,(left,top,block_size,block_size))
                 elif self.grid[i, j] == 1:
-                    pygame.draw.rect(self.background,RED,(left,top,block_size,block_size))
+                    pygame.draw.rect(self.background,self.RED,(left,top,block_size,block_size))
                 left = left + block_size + block_padding_all
             top = top + block_size + block_padding_all
         for i in range(self.slot_width):
-            pygame.draw.rect(self.background,ORANGE, (padding_left+(self.current_position[1]+i)*(block_size+block_padding_all), padding_top+self.current_position[0]*(block_size+block_padding_all), block_size, block_size))
+            pygame.draw.rect(self.background,self.ORANGE, (padding_left+(self.current_position[1]+i)*(block_size+block_padding_all), padding_top+self.current_position[0]*(block_size+block_padding_all), block_size, block_size))
         
-        label = self.myfont.render("SRC", 1, BLACK)
+        label = self.myfont.render("SRC", 1, self.BLACK)
         self.background.blit(label, (padding_left/2, font_padding_top))
-        label = self.myfont.render(str(self.src_node), 1, BLACK)
+        label = self.myfont.render(str(self.src_node), 1, self.BLACK)
         self.background.blit(label, (padding_left/2, font_padding_top + padding_top/2))
 
-        label = self.myfont.render("CURR", 1, BLACK)
+        label = self.myfont.render("CURR", 1, self.BLACK)
         self.background.blit(label, ((block_size+block_padding_all)*(2*NUMBER_OF_SLOTS/5) + padding_left, font_padding_top))
-        label = self.myfont.render(str(self.curr_node), 1, BLACK)
+        label = self.myfont.render(str(self.curr_node), 1, self.BLACK)
         self.background.blit(label, ((block_size+block_padding_all)*(2*NUMBER_OF_SLOTS/5) + padding_left, font_padding_top + padding_top/2))
 
-        label = self.myfont.render("DST", 1, BLACK)
+        label = self.myfont.render("DST", 1, self.BLACK)
         self.background.blit(label, (padding_left + (block_size+block_padding_all)*(NUMBER_OF_SLOTS) - padding_right/2, font_padding_top))
-        label = self.myfont.render(str(self.dst_node), 1, BLACK)
+        label = self.myfont.render(str(self.dst_node), 1, self.BLACK)
         self.background.blit(label, (padding_left + (block_size+block_padding_all)*(NUMBER_OF_SLOTS) - padding_right/2, font_padding_top + padding_top/2))
 
-        label = self.myfont.render("ROUND", 1, BLACK)
+        label = self.myfont.render("ROUND", 1, self.BLACK)
         self.background.blit(label, (padding_left, num_rows*(block_size+block_padding_all) + padding_top + padding_bottom/2))
-        label = self.myfont.render(str(self.rounds), 1, BLACK)
+        label = self.myfont.render(str(self.rounds), 1, self.BLACK)
         self.background.blit(label, ((block_size+block_padding_all)*(3*NUMBER_OF_SLOTS/9) + padding_left, num_rows*(block_size+block_padding_all) + padding_top + padding_bottom/2))
 
-        label = self.myfont.render("SCORE", 1, BLACK)
+        label = self.myfont.render("SCORE", 1, self.BLACK)
         self.background.blit(label, ((block_size+block_padding_all)*(6*NUMBER_OF_SLOTS/10) + padding_left, num_rows*(block_size+block_padding_all) + padding_top + padding_bottom/2))
-        label = self.myfont.render(str(self.reward), 1, BLACK)
+        label = self.myfont.render(str(self.reward), 1, self.BLACK)
         self.background.blit(label, ((block_size+block_padding_all)*(9*NUMBER_OF_SLOTS/10) + padding_left, num_rows*(block_size+block_padding_all) + padding_top + padding_bottom/2))
 
         self.surfarr = pygame.surfarray.array3d(self.background)
@@ -221,7 +230,7 @@ class ArcadeGame:
 
 
 def main():  # only used for human mode
-    game = ArcadeGame()
+    game = ArcadeGame(mode="human")
     game.reset_game()
     game.draw_screen()
     game.render()

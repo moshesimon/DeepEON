@@ -2,7 +2,6 @@ from random import seed
 from stable_baselines3.dqn.policies import CnnPolicy
 from stable_baselines3.dqn.dqn import DQN
 from wandb.integration.sb3 import WandbCallback
-from stable_baselines3.common.callbacks import CallbackList, BaseCallback
 import wandb
 import argparse
 from datetime import datetime
@@ -14,56 +13,8 @@ from envs.custom_env import CustomEnv as CustomEnv1
 from envs.custom_env2 import CustomEnv as CustomEnv2
 from envs.custom_env3 import CustomEnv as CustomEnv3
 
+# full_name = f"env3_{NUMBER_OF_NODES}_nodes_{NUMBER_OF_SLOTS}_slots_test15"
 
-class SaveOnBestTrainingRewardCallback(BaseCallback):
-    """
-    Callback for saving a model (the check is done every ``check_freq`` steps)
-    based on the training reward (in practice, we recommend using ``EvalCallback``).
-
-    :param check_freq: (int)
-    :param log_dir: (str) Path to the folder where the model will be saved.
-      It must contains the file created by the ``Monitor`` wrapper.
-    :param verbose: (int)
-    """
-    def __init__(self, check_freq: int, log_dir: str, verbose=1):
-        super(SaveOnBestTrainingRewardCallback, self).__init__(verbose)
-        self.check_freq = check_freq
-        self.log_dir = log_dir
-        self.save_path = os.path.join(log_dir, 'best_model')
-        self.best_mean_reward = -np.inf
-
-    def _init_callback(self) -> None:
-        # Create folder if needed
-        if self.save_path is not None:
-            os.makedirs(self.save_path, exist_ok=True)
-
-    def _on_step(self) -> bool:
-        if self.n_calls % self.check_freq == 0:
-
-          # Retrieve training reward
-          x, y = ts2xy(load_results(self.log_dir), 'timesteps')
-          if len(x) > 0:
-              # Mean training reward over the last 100 episodes
-              mean_reward = np.mean(y[-100:])
-              if self.verbose > 0:
-                print("Num timesteps: {}".format(self.num_timesteps))
-                print("Best mean reward: {:.2f} - Last mean reward per episode: {:.2f}".format(self.best_mean_reward, mean_reward))
-
-              # New best model, you could save the agent here
-              if mean_reward > self.best_mean_reward:
-                  self.best_mean_reward = mean_reward
-                  # Example for saving best model
-                  if self.verbose > 0:
-                    print("Saving new best model to {}".format(self.save_path))
-                  self.model.save(self.save_path)
-
-        return True
-
-
-NUMBER_OF_NODES = all_configs["number_of_nodes"]
-NUMBER_OF_SLOTS = all_configs["number_of_slots"]
-
-full_name = f"env3_{NUMBER_OF_NODES}_nodes_{NUMBER_OF_SLOTS}_slots_test15"
 
 parse = False
 # Build your ArgumentParser however you like
@@ -89,10 +40,12 @@ if model_config["env"] == 1:
 elif model_config["env"] == 2:
     env = CustomEnv2()
 elif model_config["env"] == 3:
-    env = CustomEnv3()
+    env = CustomEnv3(mode="rgb_array")
 else:
     print("env not selected correctly in config.py")
     exit(1)
+
+env.seed(config["seed"])
 
 if parse:
     parser = setup_parser()
@@ -124,7 +77,7 @@ if parse:
 
     config = args_config
 
-run = wandb.init(
+wandb.init(
     project="DeepEON",
     entity="deepeon",
     name=full_name,
@@ -147,21 +100,17 @@ model = DQN(
     train_freq=config["train_freq"],
 )
 
-log_dir = "tmp/"
-os.makedirs(log_dir, exist_ok=True)
-
-walldb_callback = WandbCallback(
-    model_save_path=os.path.join(current_dir, "Models", full_name),
-    verbose=2,
-)
-save_on_best_training_reward_callback = SaveOnBestTrainingRewardCallback(check_freq=1000, log_dir=log_dir)
-callback_list = CallbackList(callbacks=[save_on_best_training_reward_callback, walldb_callback])
+# log_dir = "tmp/"
+# os.makedirs(log_dir, exist_ok=True)
 
 model.learn(
     total_timesteps=config["total_timesteps"],
-    callback=callback_list,
+    callback=WandbCallback(
+        model_save_path=os.path.join(current_dir, "Models", full_name),
+        verbose=2,
+    ),
     tb_log_name=full_name,
     reset_num_timesteps=False,
 )
-run.finish()
+wandb.run.finish()
 env.close()

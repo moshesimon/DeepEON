@@ -1,18 +1,20 @@
 from gym import Env
 from gym import spaces
 import numpy as np
-from Games.game7 import ArcadeGame, grid_width, grid_height, FULL_GRID_REWARD, SOLUTION_REWARD, num_columns, num_rows
+from Games.game7 import ArcadeGame, grid_width, grid_height, FULL_GRID_REWARD, SOLUTION_REWARD, num_columns, num_rows, REJECTION_REWARD
 from config import all_configs
 
 class CustomEnv(Env):
     metadata = {"render.modes": ["human", "rgb_array"]}
     num_envs = 1
 
-    def __init__(self):
-        self.game = ArcadeGame()
+    def __init__(self, mode):
+        self.game = ArcadeGame(mode=mode)
+        self.mode = mode
         self.action_space = spaces.Discrete(6)
+        max_val = max(grid_width, grid_height)
         self.observation_space = spaces.Box(
-            shape=(grid_width, grid_height, 3), low=0, high=255, dtype=np.uint8
+            shape=(grid_width, grid_height, 3), low=0, high=max_val, dtype=np.uint8
         )
 
     def step(self, action):
@@ -68,6 +70,7 @@ class CustomEnv(Env):
                 pass # negative reward ?
         elif action == 5:  # SPACE
             # large negative reward ?
+            self.game.reward =+ REJECTION_REWARD
             self.game.reset_game()
             done = True
 

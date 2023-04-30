@@ -15,16 +15,16 @@ logger.setLevel(logging.DEBUG)
 
 temp_configs = {
     "env": 3,
-    "episode_end": 2,
-    "end_limit":16,
+    "episode_end": 1,
+    "end_limit": 5,
     "number_of_slots": 8,
     "screen_number_of_slots": 8,
     "number_of_slots_evaluated": 8,
     "number_of_episodes_evaluated": 1000,
     "K": 3,
-    "number_of_nodes": 3,
+    "number_of_nodes": 4,
     "solution_reward": 10,
-    "rejection_reward": -10,
+    "rejection_reward": -20,
     "gap_rejection_reward": -15,
     "left_reward": 0,
     "right_reward": 0,
@@ -61,6 +61,7 @@ temp_configs["screen_width"] = (
 
 all_configs = temp_configs
 
+# full_name = f"{all_configs['number_of_slots']}_{all_configs['screen_number_of_slots']}_{all_configs['K']}_{all_configs['solution_reward']}_{all_configs['rejection_reward']}_{all_configs['gap_rejection_reward']}_{all_configs['seed']}_{all_configs['env']}_{all_configs['episode_end']}_{all_configs['end_limit']}"
 full_name = f"{all_configs['number_of_slots']}_{all_configs['screen_number_of_slots']}_{all_configs['K']}_{all_configs['solution_reward']}_{all_configs['rejection_reward']}_{all_configs['gap_rejection_reward']}_{all_configs['seed']}_{all_configs['env']}_{all_configs['episode_end']}_{all_configs['end_limit']}"
 
 model_config = {

@@ -5,17 +5,28 @@ from envs.custom_env2 import CustomEnv as CustomEnv2
 from envs.custom_env3 import CustomEnv as CustomEnv3
 import cv2
 import os
-from config import current_dir, full_name, all_configs
+from config import current_dir, full_name, all_configs, logger
 
-NUMBER_OF_NODES = all_configs["number_of_nodes"]
-NUMBER_OF_SLOTS = all_configs["number_of_slots"]
 
-NUMBER_OF_NODES = 3
-NUMBER_OF_SLOTS = 8
-num = '13'
-env = CustomEnv3()
+if all_configs["env"] == 1:
+    env = CustomEnv1()
+elif all_configs["env"] == 2:
+    env = CustomEnv2()
+elif all_configs["env"] == 3:
+    env = CustomEnv3()
+else:
+    print("env not selected correctly in config.py")
+    exit(1)
 
-full_name = f"env3_{NUMBER_OF_NODES}_nodes_{NUMBER_OF_SLOTS}_slots_test{num}"
+# NUMBER_OF_NODES = all_configs["number_of_nodes"]
+# NUMBER_OF_SLOTS = all_configs["number_of_slots"]
+
+# NUMBER_OF_NODES = 3
+# NUMBER_OF_SLOTS = 8
+# num = '13'
+# env = CustomEnv3()
+
+# full_name = f"env3_{NUMBER_OF_NODES}_nodes_{NUMBER_OF_SLOTS}_slots_test{num}"
 
 # SCREEN_HEIGHT = all_configs["height"]
 # SCREEN_WIDTH = all_configs["width"]
@@ -30,6 +41,7 @@ full_name = f"env3_{NUMBER_OF_NODES}_nodes_{NUMBER_OF_SLOTS}_slots_test{num}"
 #     print("env not selected correctly in config.py")
 #     exit(1)
 
+logger.info(f"full name: {full_name}")
 
 def record(frame_array):
     print("saving..")
@@ -62,8 +74,9 @@ while games < 10:
     while not done:
         action, _states = model.predict(obs, deterministic=True)
         obs, reward, done, info = env.step(action)
-        print(reward)
+        # print(reward)
         if reward > 0 or record_ep:
+            print(reward)
             record_ep = True
             frame = env.render(mode="rgb_array")
             temp_frame_array.append(frame)
