@@ -68,8 +68,8 @@ class ArcadeGame:
             self.WHITE = (0, 0, 1)
             self.GRAY = (0, 0, 2)
             self.GREEN = (0, 0, 3)
-            self.self.YELLOW = (0, 0, 4)
-            self.self.ORANGE = (0, 0, 5)
+            self.YELLOW = (0, 0, 4)
+            self.ORANGE = (0, 0, 5)
             self.RED = (0, 0, 6)
         else:
             self.RED = (255, 0, 0)
