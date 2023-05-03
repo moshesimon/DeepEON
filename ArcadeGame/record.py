@@ -5,6 +5,7 @@ from envs.custom_env2 import CustomEnv as CustomEnv2
 from envs.custom_env3 import CustomEnv as CustomEnv3
 import cv2
 import os
+import numpy as np
 from config import current_dir, full_name, all_configs, logger
 
 
@@ -13,7 +14,8 @@ if all_configs["env"] == 1:
 elif all_configs["env"] == 2:
     env = CustomEnv2()
 elif all_configs["env"] == 3:
-    env = CustomEnv3()
+    env = CustomEnv3(mode="rgb_array")
+    from envs.custom_env3 import SCREEN_WIDTH, SCREEN_HEIGHT
 else:
     print("env not selected correctly in config.py")
     exit(1)
@@ -65,25 +67,36 @@ print("model loaded")
 env.highscore = 0
 frame_array = []
 games = 0
-while games < 10:
+while games < 100:
     obs = env.reset()
     done = False
     record_ep = False
     old_rew = 0
     temp_frame_array = []
     while not done:
-        action, _states = model.predict(obs, deterministic=True)
+        action, _states = model.predict(obs)
         obs, reward, done, info = env.step(action)
         # print(reward)
-        if reward > 0 or record_ep:
-            print(reward)
+        if reward > 0 and not record_ep: # start recoding this episode
             record_ep = True
-            frame = env.render(mode="rgb_array")
+            episode_reward = 0
+
+        if record_ep:
+            episode_reward += reward
+            record_ep = True
+            env.set_mode("human")
+            frame = env.render()
+            # env.set_mode("rgb_array")
             temp_frame_array.append(frame)
-        if done and record_ep:
-            print(f"game {games} done")
+
+        if record_ep and done:
+            print(f"game {games} done, reward: {episode_reward}")
+            record_ep = False
             games += 1
             for frame in temp_frame_array:
+                frame_array.append(frame)
+            frame = np.ones((temp_frame_array[0].shape[0], temp_frame_array[0].shape[1], temp_frame_array[0].shape[2]), dtype=np.uint8) * 255
+            for i in range(10):
                 frame_array.append(frame)
 
 record(frame_array)

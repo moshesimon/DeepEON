@@ -61,6 +61,15 @@ for i in range(len(link_names)):
 class ArcadeGame:
     def __init__(self, mode):
         pygame.init()
+        self.set_mode(mode)
+        self.myfont = pygame.font.SysFont("monospace", 14)
+        self.window = (grid_width, grid_height)
+        self.background = pygame.Surface(self.window)
+        self.highscore = -1
+        self.seed()
+
+    def set_mode(self, mode):
+        self.mode = mode
         if mode != "human" and mode != "rgb_array":
             raise Exception("Invalid mode!")
         if mode == "rgb_array":
@@ -79,11 +88,7 @@ class ArcadeGame:
             self.YELLOW = (255, 255, 0)
             self.GRAY = (128, 128, 128)
             self.ORANGE = (255, 165, 0)
-        self.myfont = pygame.font.SysFont("monospace", 14)
-        self.window = (grid_width, grid_height)
-        self.background = pygame.Surface(self.window)
-        self.highscore = -100
-        self.seed()
+
 
     def draw_screen(self):
         self.background.fill(self.GRAY)

@@ -1,7 +1,7 @@
 from gym import Env
 from gym import spaces
 import numpy as np
-from Games.game7 import ArcadeGame, grid_width, grid_height, FULL_GRID_REWARD, SOLUTION_REWARD, num_columns, num_rows, REJECTION_REWARD
+from Games.game7 import ArcadeGame, grid_width, grid_height, FULL_GRID_REWARD, SOLUTION_REWARD, GAP_REJECTION_REWARD, num_columns, num_rows, REJECTION_REWARD, SCREEN_HEIGHT, SCREEN_WIDTH
 from config import all_configs
 
 class CustomEnv(Env):
@@ -12,9 +12,8 @@ class CustomEnv(Env):
         self.game = ArcadeGame(mode=mode)
         self.mode = mode
         self.action_space = spaces.Discrete(6)
-        max_val = max(grid_width, grid_height)
         self.observation_space = spaces.Box(
-            shape=(grid_width, grid_height, 3), low=0, high=max_val, dtype=np.uint8
+            shape=(grid_width, grid_height, 3), low=0, high=255, dtype=np.uint8
         )
 
     def step(self, action):
@@ -24,30 +23,30 @@ class CustomEnv(Env):
                 if self.game.current_position[1] < num_columns - self.game.slot_width:
                     self.game.current_position[1] += 1
                 else:
-                    pass # negative reward ?
+                    self.game.reward += GAP_REJECTION_REWARD # negative reward ?
                 observation = self.game.draw_screen()
             else:
-                pass # negative reward ?
+                self.game.reward += GAP_REJECTION_REWARD # negative reward ?
         elif action == 1:  # LEFT
             if not self.game.block_slot_selection:
                 if self.game.current_position[1] > 0:
                     self.game.current_position[1] -= 1
                 else:
-                    pass # negative reward ?
+                    self.game.reward += GAP_REJECTION_REWARD # negative reward ?
                 observation = self.game.draw_screen()
             else:
-                pass # negative reward ?
+                self.game.reward += GAP_REJECTION_REWARD # negative reward ?
         elif action == 3:  # UP
             if self.game.current_position[0] > 0:
                 self.game.current_position[0] -= 1
             else:
-                pass # negative reward ?
+                self.game.reward += GAP_REJECTION_REWARD # negative reward ?
             observation = self.game.draw_screen()
         elif action == 3:  # DOWN
             if self.game.current_position[0] < num_rows - 1:
                 self.game.current_position[0] += 1
             else:
-                pass # negative reward ?
+                self.game.reward += GAP_REJECTION_REWARD # negative reward ?
             observation = self.game.draw_screen()
         elif action == 4:  # ENTER
             if self.game.allow_slot_allocation():
@@ -64,13 +63,14 @@ class CustomEnv(Env):
                         self.game.new_game()
                 else:
                     # negative reward ?
+                    self.game.reward += GAP_REJECTION_REWARD
                     self.game.new_round()
                 observation = self.game.draw_screen()
             else:
-                pass # negative reward ?
+                self.game.reward += GAP_REJECTION_REWARD # negative reward ?
         elif action == 5:  # SPACE
             # large negative reward ?
-            self.game.reward =+ REJECTION_REWARD
+            self.game.reward += REJECTION_REWARD
             self.game.reset_game()
             done = True
 
@@ -90,3 +90,6 @@ class CustomEnv(Env):
 
     def close(self):
         self.game.exit()
+
+    def set_mode(self, mode):
+        self.game.set_mode(mode)
