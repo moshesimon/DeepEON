@@ -28,6 +28,7 @@ class CustomEnv(Env):
                     episode_reward = GAP_REJECTION_REWARD # negative reward ?
             else:
                 episode_reward = GAP_REJECTION_REWARD # negative reward ?
+            self.game.score += episode_reward
         elif action == 1:  # LEFT
             if not self.game.block_slot_selection:
                 if self.game.current_position[1] > 0:
@@ -37,44 +38,48 @@ class CustomEnv(Env):
                     episode_reward = GAP_REJECTION_REWARD # negative reward ?
             else:
                 episode_reward = GAP_REJECTION_REWARD # negative reward ?
+            self.game.score += episode_reward
         elif action == 2:  # UP
             if self.game.current_position[0] > 0:
                 self.game.current_position[0] -= 1
                 episode_reward = 0
             else:
                 episode_reward = GAP_REJECTION_REWARD # negative reward ?
+            self.game.score += episode_reward
         elif action == 3:  # DOWN
             if self.game.current_position[0] < num_rows - 1:
                 self.game.current_position[0] += 1
                 episode_reward = 0
             else:
                 episode_reward = GAP_REJECTION_REWARD # negative reward ?
+            self.game.score += episode_reward
         elif action == 4:  # ENTER
             if self.game.allow_slot_allocation():
                 self.game.allocate_slot()
                 self.game.block_slot_selection = True
                 # self.game.draw_screen()
-                if self.game.curr_node == self.game.dst_node:
+                if self.game.curr_node == self.game.dst_node:  # arrived at destination node
                     episode_reward = SOLUTION_REWARD
                     if self.game.check_if_full_grid():
                         episode_reward += FULL_GRID_REWARD
+                        self.game.score += episode_reward
                         self.game.reset_game()
                         done = True
                     else:
                         self.game.new_game()
                 else:
-                    # negative reward ?
-                    episode_reward = GAP_REJECTION_REWARD
-                    self.game.new_round()
+                    episode_reward = 0
+                    self.game.score += episode_reward
+                    self.game.new_round()  # not a final link 
             else:
-                episode_reward = GAP_REJECTION_REWARD # negative reward ?
+                episode_reward = GAP_REJECTION_REWARD # negative reward for trying wrong slot
+                self.game.score += episode_reward
         elif action == 5:  # SPACE
             # large negative reward ?
             episode_reward = REJECTION_REWARD
+            self.game.score += episode_reward
             self.game.reset_game()
             done = True
-
-        self.game.reward += episode_reward
         observation = self.game.draw_screen()
         return observation, episode_reward, done, info
 

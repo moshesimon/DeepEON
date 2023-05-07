@@ -26,8 +26,7 @@ SPECTRUM_SLOTS_ROWS_FROM_TOP = all_configs["spectrum_slots_rows_from_top"]
 SOLUTION_REWARD = all_configs["solution_reward"]
 REJECTION_REWARD = all_configs["rejection_reward"]
 GAP_REJECTION_REWARD = all_configs["gap_rejection_reward"]
-LEFT_REWARD = all_configs["left_reward"]
-RIGHT_REWARD = all_configs["right_reward"]
+FULL_GRID_REWARD = all_configs["full_grid_reward"]
 SEED = all_configs["seed"]
 END_LIMIT = all_configs["end_limit"]
 EPISODE_END = all_configs["episode_end"]
@@ -137,7 +136,7 @@ class ArcadeGame:
 
         label = self.myfont.render("SCORE", 1, self.BLACK)
         self.background.blit(label, ((block_size+block_padding_all)*(6*NUMBER_OF_SLOTS/10) + padding_left, num_rows*(block_size+block_padding_all) + padding_top + padding_bottom/2))
-        label = self.myfont.render(str(self.reward), 1, self.BLACK)
+        label = self.myfont.render(str(self.score), 1, self.BLACK)
         self.background.blit(label, ((block_size+block_padding_all)*(9*NUMBER_OF_SLOTS/10) + padding_left, num_rows*(block_size+block_padding_all) + padding_top + padding_bottom/2))
 
         self.surfarr = pygame.surfarray.array3d(self.background)
@@ -154,14 +153,15 @@ class ArcadeGame:
             self.background, colour, (col * WIDTH, row * HEIGHT, WIDTH, HEIGHT)
         )
     
+    # Reset the game entirely, score is 0
     def reset_game(self):
         self.score = 0
-        self.reward = 0
         self.blocks = 0
         self.rounds = 0
         self.grid = np.zeros((num_rows, num_columns), dtype=np.uint8)
         self.new_game()
 
+    # New game, score is kept
     def new_game(self):
         self.rounds += 1
         self.block_slot_selection = False
@@ -169,6 +169,7 @@ class ArcadeGame:
         self.src_node = np.random.randint(1, NUMBER_OF_NODES + 1)
         self.dst_node = np.random.randint(1, NUMBER_OF_NODES + 1)
         while self.dst_node == self.src_node:
+            # Src and dst nodes should be different
             self.dst_node = np.random.randint(1, NUMBER_OF_NODES + 1)
         self.curr_node = self.src_node
         # self.slot_width = np.random.randint(2, 5)
@@ -206,27 +207,28 @@ class ArcadeGame:
             self.grid[self.current_position[0]][self.current_position[1] + i] = 1
         self.selected_slot = self.current_position[1]
 
-    def check_solution(self):
-        done = False
-        reward = self.get_solution_reward()
-        if reward == SOLUTION_REWARD:
-            self.reward += reward
-            self.update_link_grid()
-        else:
-            self.blocks += 1
-            self.reward += reward
+    # def check_solution(self):
+    #     done = False
 
-        if EPISODE_END == 1 and self.blocks >= END_LIMIT:
-            done = True
-        elif EPISODE_END == 2 and self.rounds >= END_LIMIT:
-            done = True
+    #     reward = self.get_solution_reward()
+    #     if reward == SOLUTION_REWARD:
+    #         self.reward += reward
+    #         self.update_link_grid()
+    #     else:
+    #         self.blocks += 1
+    #         self.reward += reward
 
-        if self.score > self.highscore:
-            self.highscore = self.score
+    #     if EPISODE_END == 1 and self.blocks >= END_LIMIT:
+    #         done = True
+    #     elif EPISODE_END == 2 and self.rounds >= END_LIMIT:
+    #         done = True
 
-        self.new_round()
+    #     if self.score > self.highscore:
+    #         self.highscore = self.score
 
-        return reward, done
+    #     self.new_round()
+
+    #     return reward, done
 
     def check_if_full_grid(self):
         if np.count_nonzero(self.grid) == num_rows * num_columns:
@@ -255,22 +257,34 @@ def main():  # only used for human mode
                     if not game.block_slot_selection:
                         if game.current_position[1] < num_columns - game.slot_width:
                             game.current_position[1] += 1
-                        game.draw_screen()
-                        game.render()
+                        else:
+                            game.score += GAP_REJECTION_REWARD
+                    else:
+                        game.score += GAP_REJECTION_REWARD
+                    game.draw_screen()
+                    game.render()
                 elif event.key == pygame.K_LEFT:
                     if not game.block_slot_selection:
                         if game.current_position[1] > 0:
                             game.current_position[1] -= 1
-                        game.draw_screen()
-                        game.render()
+                        else:
+                            game.score += GAP_REJECTION_REWARD
+                    else:
+                        game.score += GAP_REJECTION_REWARD
+                    game.draw_screen()
+                    game.render()
                 elif event.key == pygame.K_UP:
                     if game.current_position[0] > 0:
                         game.current_position[0] -= 1
+                    else:
+                        game.score += GAP_REJECTION_REWARD
                     game.draw_screen()
                     game.render()
                 elif event.key == pygame.K_DOWN:
                     if game.current_position[0] < num_rows - 1:
                         game.current_position[0] += 1
+                    else:
+                        game.score += GAP_REJECTION_REWARD
                     game.draw_screen()
                     game.render()
                 elif event.key == pygame.K_RETURN:
@@ -280,11 +294,11 @@ def main():  # only used for human mode
                         game.draw_screen()
                         game.render()
                         if game.curr_node == game.dst_node:
-                            game.reward += SOLUTION_REWARD
+                            game.score += SOLUTION_REWARD
                             if logging:
                                 logger.info(f"Round {game.rounds} over. Reward: {game.reward}")
                             if game.check_if_full_grid():
-                                game.reward += FULL_GRID_REWARD
+                                game.score += FULL_GRID_REWARD
                                 if logging:
                                     logger.info(f"[FULL GRID] Game with {game.rounds} rounds finished. Reward: {game.reward}")
                                 game.reset_game()
@@ -292,9 +306,12 @@ def main():  # only used for human mode
                                 game.new_game()
                         else:
                             game.new_round()
-                        game.draw_screen()
-                        game.render()
+                    else:
+                        game.score += GAP_REJECTION_REWARD
+                    game.draw_screen()
+                    game.render()
                 elif event.key == pygame.K_SPACE:
+                    game.score += REJECTION_REWARD
                     game.reset_game()
                     game.draw_screen()
                     game.render()
