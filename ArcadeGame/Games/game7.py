@@ -111,9 +111,7 @@ class ArcadeGame:
                     pygame.draw.rect(self.background,self.RED,(left,top,block_size,block_size))
                 left = left + block_size + block_padding_all
             top = top + block_size + block_padding_all
-        for i in range(self.slot_width):
-            pygame.draw.rect(self.background,self.ORANGE, (padding_left+(self.current_position[1]+i)*(block_size+block_padding_all), padding_top+self.current_position[0]*(block_size+block_padding_all), block_size, block_size))
-        
+            
         label = self.myfont.render("SRC", 1, self.BLACK)
         self.background.blit(label, (padding_left/2, font_padding_top))
         label = self.myfont.render(str(self.src_node), 1, self.BLACK)
@@ -163,7 +161,7 @@ class ArcadeGame:
 
     # New game, score is kept
     def new_game(self):
-        self.rounds += 1
+        self.block_slot_selection = False
         self.block_slot_selection = False
         self.selected_slot = 0
         self.src_node = np.random.randint(1, NUMBER_OF_NODES + 1)
@@ -172,11 +170,12 @@ class ArcadeGame:
             # Src and dst nodes should be different
             self.dst_node = np.random.randint(1, NUMBER_OF_NODES + 1)
         self.curr_node = self.src_node
-        # self.slot_width = np.random.randint(2, 5)
-        self.slot_width = 2
+        self.slot_width = np.random.randint(2, 5)
+        # self.slot_width = 2
         self.new_round()
 
     def new_round(self):
+        self.rounds += 1
         self.current_position = [0, self.selected_slot]  # [row, column]
 
     def allow_slot_allocation(self):
@@ -206,6 +205,20 @@ class ArcadeGame:
         for i in range(self.slot_width):
             self.grid[self.current_position[0]][self.current_position[1] + i] = 1
         self.selected_slot = self.current_position[1]
+
+    def get_allowed_actions(self):
+        allowed_actions = []
+        for i in range(num_rows):
+            allowed_actions.append(self.selected_slot + (num_columns * i))
+        return allowed_actions
+    
+    def get_blocked_actions(self):
+        blocked_actions = []
+        # selection of last x columns is blocked
+        for i in range(num_rows):
+            for j in range(self.slot_width - 1):
+                blocked_actions.append((num_columns - 1 - j) + (num_columns * i))
+        return blocked_actions
 
     # def check_solution(self):
     #     done = False
@@ -248,73 +261,191 @@ def main():  # only used for human mode
     game.reset_game()
     game.draw_screen()
     game.render()
+    selection_string = ""
     while True:
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 game.exit()
             if event.type == pygame.KEYDOWN:
-                if event.key == pygame.K_RIGHT:
-                    if not game.block_slot_selection:
-                        if game.current_position[1] < num_columns - game.slot_width:
-                            game.current_position[1] += 1
-                        else:
-                            game.score += GAP_REJECTION_REWARD
-                    else:
-                        game.score += GAP_REJECTION_REWARD
-                    game.draw_screen()
-                    game.render()
-                elif event.key == pygame.K_LEFT:
-                    if not game.block_slot_selection:
-                        if game.current_position[1] > 0:
-                            game.current_position[1] -= 1
-                        else:
-                            game.score += GAP_REJECTION_REWARD
-                    else:
-                        game.score += GAP_REJECTION_REWARD
-                    game.draw_screen()
-                    game.render()
-                elif event.key == pygame.K_UP:
-                    if game.current_position[0] > 0:
-                        game.current_position[0] -= 1
-                    else:
-                        game.score += GAP_REJECTION_REWARD
-                    game.draw_screen()
-                    game.render()
-                elif event.key == pygame.K_DOWN:
-                    if game.current_position[0] < num_rows - 1:
-                        game.current_position[0] += 1
-                    else:
-                        game.score += GAP_REJECTION_REWARD
-                    game.draw_screen()
-                    game.render()
-                elif event.key == pygame.K_RETURN:
-                    if game.allow_slot_allocation():
-                        game.allocate_slot()
-                        game.block_slot_selection = True
-                        game.draw_screen()
-                        game.render()
-                        if game.curr_node == game.dst_node:
-                            game.score += SOLUTION_REWARD
-                            if logging:
-                                logger.info(f"Round {game.rounds} over. Reward: {game.reward}")
-                            if game.check_if_full_grid():
-                                game.score += FULL_GRID_REWARD
-                                if logging:
-                                    logger.info(f"[FULL GRID] Game with {game.rounds} rounds finished. Reward: {game.reward}")
-                                game.reset_game()
-                            else:
-                                game.new_game()
-                        else:
-                            game.new_round()
-                    else:
-                        game.score += GAP_REJECTION_REWARD
-                    game.draw_screen()
-                    game.render()
-                elif event.key == pygame.K_SPACE:
+                if event.key == pygame.K_SPACE:
+                    selection_string = ""
                     game.score += REJECTION_REWARD
                     game.reset_game()
                     game.draw_screen()
                     game.render()
+                elif event.key == pygame.K_BACKSPACE:
+                    if len(selection_string) > 0:
+                        selection_string = selection_string[:-1]
+                        print ("\033[A                             \033[A")
+                        if not len(selection_string) == 0:
+                            print(f"Selection: {selection_string}")
+                        try:
+                            selection = int(selection_string)
+                            if selection >= 0 and selection <= num_rows * num_columns - 1:
+                                game.current_position = [selection // num_columns, selection % num_columns]
+                                game.draw_screen()
+                                for i in range(game.slot_width):
+                                    pygame.draw.rect(game.background,game.ORANGE, (padding_left+(game.current_position[1]+i)*(block_size+block_padding_all), padding_top+game.current_position[0]*(block_size+block_padding_all), block_size, block_size))
+                                game.render()
+                            else:
+                                game.draw_screen()
+                                game.render()
+                        except:
+                            game.draw_screen()
+                            game.render()
+                elif event.key == pygame.K_RETURN:
+                    if len(selection_string) > 0:
+                        try:
+                            selection = int(selection_string)
+                            game.current_position = [selection // num_columns, selection % num_columns]
+                            if selection >= 0 and selection <= num_rows * num_columns - 1:
+                                if not game.block_slot_selection:  # selecting first slot of route
+                                    blocked_actions = game.get_blocked_actions()
+                                    if selection not in blocked_actions:
+                                        if game.allow_slot_allocation():
+                                            game.allocate_slot()
+                                            allocated_to_slots = []
+                                            for i in range(game.slot_width):
+                                                allocated_to_slots.append(game.current_position[1] + i)
+                                            print(f"Allocated to slots {allocated_to_slots} of route {links[game.current_position[0]]}")
+                                            if game.curr_node == game.dst_node:  # arrived to destination node
+                                                game.score += SOLUTION_REWARD
+                                                if game.check_if_full_grid():
+                                                    game.score += FULL_GRID_REWARD
+                                                    game.reset_game()
+                                                else:
+                                                    game.new_game()
+                                            else:  # not destination
+                                                game.block_slot_selection = True
+                                                game.score += 0
+                                                game.new_round()
+                                        else:  # route selection invalid
+                                            print("Cannot allocate: Route not allowed")
+                                            game.score += GAP_REJECTION_REWARD
+                                    else:  # action in blocked actions
+                                        print("Cannot allocate: Selection in blocked actions")
+                                        game.score += GAP_REJECTION_REWARD
+                                else: # selecting subsequent slots of route
+                                    allowed_actions = game.get_allowed_actions()
+                                    if selection in allowed_actions:
+                                        if game.allow_slot_allocation():
+                                            game.allocate_slot()
+                                            allocated_to_slots = []
+                                            for i in range(game.slot_width):
+                                                allocated_to_slots.append(game.current_position[1] + i)
+                                            print(f"Allocated to slots {allocated_to_slots} of route {links[game.current_position[0]]}")
+                                            if game.curr_node == game.dst_node:  # arrived to destination node
+                                                game.score += SOLUTION_REWARD
+                                                if game.check_if_full_grid():
+                                                    game.score += FULL_GRID_REWARD
+                                                    game.reset_game()
+                                                else:
+                                                    game.new_game()
+                                                game.block_slot_selection = False
+                                            else:  # not destination node
+                                                game.score += 0
+                                                game.new_round()
+                                        else:  # route selection invalid
+                                            print("Cannot allocate: Route not allowed")
+                                            game.score += GAP_REJECTION_REWARD
+                                    else:
+                                        print("Cannot allocate: Selection not in allowed actions")
+                                        game.score += GAP_REJECTION_REWARD
+                            else:  # action in blocked actions
+                                print("Invalid selection")
+                                game.score += GAP_REJECTION_REWARD
+                            selection_string = ""
+                            game.draw_screen()
+                            game.render()
+                        except Exception as e:
+                            print(e)
+                            exit(1)
+                    game.draw_screen()
+                    game.render()
+                elif event.key >= 48 and event.key <= 57:
+                    selection_string += (chr(event.key))
+                    if len(selection_string) > 1:
+                        print ("\033[A                             \033[A")
+                    print(f"Selection: {selection_string}")
+                    try:
+                        selection = int(selection_string)
+                        if selection >= 0 and selection <= num_rows * num_columns - 1:
+                            game.current_position = [selection // num_columns, selection % num_columns]
+                            game.draw_screen()
+                            for i in range(game.slot_width):
+                                pygame.draw.rect(game.background,game.ORANGE, (padding_left+(game.current_position[1]+i)*(block_size+block_padding_all), padding_top+game.current_position[0]*(block_size+block_padding_all), block_size, block_size))
+                            game.render()
+                        else:
+                            game.draw_screen()
+                            game.render()
+                    except Exception as e:
+                        print(e)
+                else:
+                    print("Invalid key press")
+                    game.score += GAP_REJECTION_REWARD
+
+                # if event.key == pygame.K_RIGHT:
+                #     if not game.block_slot_selection:
+                #         if game.current_position[1] < num_columns - game.slot_width:
+                #             game.current_position[1] += 1
+                #         else:
+                #             game.score += GAP_REJECTION_REWARD
+                #     else:
+                #         game.score += GAP_REJECTION_REWARD
+                #     game.draw_screen()
+                #     game.render()
+                # elif event.key == pygame.K_LEFT:
+                #     if not game.block_slot_selection:
+                #         if game.current_position[1] > 0:
+                #             game.current_position[1] -= 1
+                #         else:
+                #             game.score += GAP_REJECTION_REWARD
+                #     else:
+                #         game.score += GAP_REJECTION_REWARD
+                #     game.draw_screen()
+                #     game.render()
+                # elif event.key == pygame.K_UP:
+                #     if game.current_position[0] > 0:
+                #         game.current_position[0] -= 1
+                #     else:
+                #         game.score += GAP_REJECTION_REWARD
+                #     game.draw_screen()
+                #     game.render()
+                # elif event.key == pygame.K_DOWN:
+                #     if game.current_position[0] < num_rows - 1:
+                #         game.current_position[0] += 1
+                #     else:
+                #         game.score += GAP_REJECTION_REWARD
+                #     game.draw_screen()
+                #     game.render()
+                # elif event.key == pygame.K_RETURN:
+                #     if game.allow_slot_allocation():
+                #         game.allocate_slot()
+                #         game.block_slot_selection = True
+                #         game.draw_screen()
+                #         game.render()
+                #         if game.curr_node == game.dst_node:
+                #             game.score += SOLUTION_REWARD
+                #             if logging:
+                #                 logger.info(f"Round {game.rounds} over. Reward: {game.reward}")
+                #             if game.check_if_full_grid():
+                #                 game.score += FULL_GRID_REWARD
+                #                 if logging:
+                #                     logger.info(f"[FULL GRID] Game with {game.rounds} rounds finished. Reward: {game.reward}")
+                #                 game.reset_game()
+                #             else:
+                #                 game.new_game()
+                #         else:
+                #             game.new_round()
+                #     else:
+                #         game.score += GAP_REJECTION_REWARD
+                #     game.draw_screen()
+                #     game.render()
+                # elif event.key == pygame.K_SPACE:
+                #     game.score += REJECTION_REWARD
+                #     game.reset_game()
+                #     game.draw_screen()
+                #     game.render()
 
 
 if __name__ == "__main__":

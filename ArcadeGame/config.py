@@ -16,7 +16,7 @@ logger.setLevel(logging.DEBUG)
 temp_configs = {
     "env": 3,
     "episode_end": 2,
-    "end_limit": 9999,
+    "end_limit": 7771,
     "number_of_slots": 8,
     "screen_number_of_slots": 8,
     "number_of_slots_evaluated": 8,
@@ -30,7 +30,7 @@ temp_configs = {
     "right_reward": 0,
     "full_grid_reward": 1000,
     "seed": 0,
-    "total_timesteps": 10000000,
+    "total_timesteps": 5000000,
     "buffer_size": 100000,
     "batch_size": 64,
     "exploration_final_eps": 0.1,
