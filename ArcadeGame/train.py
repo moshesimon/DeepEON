@@ -40,7 +40,7 @@ if model_config["env"] == 1:
 elif model_config["env"] == 2:
     env = CustomEnv2()
 elif model_config["env"] == 3:
-    env = CustomEnv3(mode="rgb_array")
+    env = CustomEnv3(mode="human")
 else:
     print("env not selected correctly in config.py")
     exit(1)

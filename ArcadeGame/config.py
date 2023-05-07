@@ -15,8 +15,8 @@ logger.setLevel(logging.DEBUG)
 
 temp_configs = {
     "env": 3,
-    "episode_end": 1,
-    "end_limit": 1,
+    "episode_end": 2,
+    "end_limit": 9999,
     "number_of_slots": 8,
     "screen_number_of_slots": 8,
     "number_of_slots_evaluated": 8,

@@ -87,7 +87,8 @@ while games < 100:
             env.set_mode("human")
             frame = env.render()
             # env.set_mode("rgb_array")
-            temp_frame_array.append(frame)
+            for i in range(10):
+                temp_frame_array.append(frame)
 
         if record_ep and done:
             print(f"game {games} done, reward: {episode_reward}")
